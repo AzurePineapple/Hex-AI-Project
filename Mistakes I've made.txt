@@ -1,0 +1,647 @@
+Overcomplicating A*: Scope crept A* to iterate through entire board, A* to both edges of the player's colour from that tile.
+
+Approach to calculating resistance distance:
+    Initial plan was to use infinitely high (i.e really big) values for infinity, and really small values for 0. This ended up giving resistance distances to occupied cells with low
+    resistance, which is obviously less than ideal.
+    Next approach was to treat the foe occupied cells (FOCs) as disconnected from their neighbours, i.e having 0 values in columns and rows of Laplacian. This actually worked, giving all the same values as the prior approach, which it shouldnt have been able to.
+    The successful approach is an iteration of the previous, where the FOCs are disconnected from their neighbours, but observing that Bapat indicates G must be a connected graph,
+    we create the laplacian from the connected remains of the graph. This works, all values from alpha (red edge) to each other node on the graph give resistance distances in total agreement with the calculations done by hand using parallel resistance laws. More testing must be done on different/more complicated circuits, but I will reach the end of my abilities at some point.
+
+
+
+    // FIXME: The below matrix uses the initial interpretation, that foe occupied cells are still adjacent but have high resistance.
+//  MatrixXd m(6, 6);
+//      // Assignment comes after all other assignent
+//      m(0, 1) = -1 / 1;
+//      m(0, 2) = -1 / zero;
+//      m(0, 3) = 0;
+//      m(0, 4) = 0;
+//      m(0, 5) = 0;
+//      m(0, 0) = -(m(0, 1) + m(0, 2) + m(0, 3) + m(0, 4) + m(0, 5));
+
+//     m(1, 0) = -1 / 1;
+//     // Assignment comes after all other assignent
+//     m(1, 2) = -1 / 1;
+//     m(1, 3) = -1 / inf;
+//     m(1, 4) = 0;
+//     m(1, 5) = 0;
+//     m(1, 1) = -(m(1, 0) + m(1, 2) + m(1, 3) + m(1, 4) + m(1, 5));
+
+//     m(2, 0) = -1 / zero;
+//     m(2, 1) = -1 / 1;
+//     // Assignment comes after all other assignent
+//     m(2, 3) = -1 / inf;
+//     m(2, 4) = -1 / 1;
+//     m(2, 5) = 0;
+//     m(2, 2) = -(m(2, 0) + m(2, 1) + m(2, 3) + m(2, 4) + m(2, 5));
+
+//     m(3, 0) = 0;
+//     m(3, 1) = -1 / inf;
+//     m(3, 2) = -1 / inf;
+//     // Assignment comes after all other assignent
+//     m(3, 4) = -1 / inf;
+//     m(3, 5) = -1 / inf;
+//     m(3, 3) = -(m(3, 0) + m(3, 1) + m(3, 2) + m(3, 4) + m(3, 5));
+
+//     m(4, 0) = 0;
+//     m(4, 1) = 0;
+//     m(4, 2) = -1 / 1;
+//     m(4, 3) = -1 / inf;
+//     // Assignment comes after all other assignent
+//     m(4, 5) = -1 / 1;
+//     m(4, 4) = -(m(4, 0) + m(4, 1) + m(4, 2) + m(4, 3) + m(4, 5));
+
+//     m(5, 0) = 0;
+//     m(5, 1) = 0;
+//     m(5, 2) = 0;
+//     m(5, 3) = -1 / inf;
+//     m(5, 4) = -1 / 1;
+//     m(5, 5) = -(m(5, 0) + m(5, 1) + m(5, 2) + m(5, 3) + m(5, 4));
+
+// FIXME: This below matrix "cuts" connections to occupied tiles - saying it is no longer adjacent to each of its neighbours
+// MatrixXd m(6, 6);
+//     // Assignment comes after all other assignent
+//     m(0, 1) = -1 / 1;
+//     m(0, 2) = -1 / zero;
+//     m(0, 3) = 0;
+//     m(0, 4) = 0;
+//     m(0, 5) = 0;
+//     m(0, 0) = -(m(0, 1) + m(0, 2) + m(0, 3) + m(0, 4) + m(0, 5));
+
+//     m(1, 0) = -1 / 1;
+//     // Assignment comes after all other assignent
+//     m(1, 2) = -1 / 1;
+//     m(1, 3) = 0;
+//     m(1, 4) = 0;
+//     m(1, 5) = 0;
+//     m(1, 1) = -(m(1, 0) + m(1, 2) + m(1, 3) + m(1, 4) + m(1, 5));
+
+//     m(2, 0) = -1 / zero;
+//     m(2, 1) = -1 / 1;
+//     // Assignment comes after all other assignent
+//     m(2, 3) = 0;
+//     m(2, 4) = -1 / 1;
+//     m(2, 5) = 0;
+//     m(2, 2) = -(m(2, 0) + m(2, 1) + m(2, 3) + m(2, 4) + m(2, 5));
+
+//     m(3, 0) = 0;
+//     m(3, 1) = 0;
+//     m(3, 2) = 0;
+//     // Assignment comes after all other assignent
+//     m(3, 4) = 0;
+//     m(3, 5) = 0;
+//     m(3, 3) = -(m(3, 0) + m(3, 1) + m(3, 2) + m(3, 4) + m(3, 5));
+
+//     m(4, 0) = 0;
+//     m(4, 1) = 0;
+//     m(4, 2) = -1 / 1;
+//     m(4, 3) = 0;
+//     // Assignment comes after all other assignent
+//     m(4, 5) = -1 / 1;
+//     m(4, 4) = -(m(4, 0) + m(4, 1) + m(4, 2) + m(4, 3) + m(4, 5));
+
+//     m(5, 0) = 0;
+//     m(5, 1) = 0;
+//     m(5, 2) = 0;
+//     m(5, 3) = 0;
+//     m(5, 4) = -1 / 1;
+//     m(5, 5) = -(m(5, 0) + m(5, 1) + m(5, 2) + m(5, 3) + m(5, 4));
+
+// FIXME: This matrix is constructed based on the idea that disconnecting the nodes reduces the size of the graph: you can only construct the connected portion of the graph
+
+// MatrixXd m(5, 5);
+// m(0, 1) = -1 / 1;
+// m(0, 2) = -1 / zero;
+// m(0, 3) = 0;
+// m(0, 4) = 0;
+// m(0, 0) = -(m(0, 1) + m(0, 2) + m(0, 3) + m(0, 4) + m(0, 5));
+
+// m(1, 0) = -1 / 1;
+// // Assignment comes after all other assignent
+// m(1, 2) = -1 / 1;
+// m(1, 3) = 0;
+// m(1, 4) = 0;
+// m(1, 1) = -(m(1, 0) + m(1, 2) + m(1, 3) + m(1, 4) + m(1, 5));
+
+// m(2, 0) = -1 / zero;
+// m(2, 1) = -1 / 1;
+// // Assignment comes after all other assignent
+// m(2, 3) = -1 / 1;
+// m(2, 4) = 0;
+// m(2, 2) = -(m(2, 0) + m(2, 1) + m(2, 3) + m(2, 4) + m(2, 5));
+
+// m(3, 0) = 0;
+// m(3, 1) = 0;
+// m(3, 2) = -1 / 1;
+// // Assignment comes after all other assignent
+// m(3, 4) = -1 / 1;
+// m(3, 3) = -(m(4, 0) + m(4, 1) + m(4, 2) + m(4, 3) + m(4, 5));
+
+// m(4, 0) = 0;
+// m(4, 1) = 0;
+// m(4, 2) = 0;
+// m(4, 3) = -1 / 1;
+// m(4, 4) = -(m(5, 0) + m(5, 1) + m(5, 2) + m(5, 3) + m(5, 4));
+
+
+
+
+
+
+
+
+
+
+
+
+1/2/24
+
+Been a while since work has been done on the project due to end of term, work and holiday season. Coming back to it, I have oberved that the resistance distance function appears to
+work perfectly in all situations except when evaluating a lost board state. In the lost board state, it returns a low value (nearer 0 than a state where there evaluating player is 
+1 turn from winning), indicating that the evaluating player is actually close to winning. However, it returns good values for every other board state, AND it should actually never
+have to evaluate a lost board state; as soon as either player wins the game is over from the main loop logic. I am going to say this is working now and begin implementing the ability
+to evaulate for both top/bottom connections and left/right connections (currently only geared to evaluate top/bottom)
+
+
+#include "ResistanceDistance.h"
+using Eigen::MatrixXd;
+
+ResistanceDistance::ResistanceDistance()
+{
+    int exampleBoardSize = 3;
+    exampleBoard.resize(exampleBoardSize, std::vector<int>(exampleBoardSize, 0));
+    exampleBoard[0][1] = 2;
+    exampleBoard[0][2] = 1;
+    exampleBoard[1][0] = 1;
+    exampleBoard[1][1] = 2;
+    exampleBoard[1][2] = 2;
+    exampleBoard[2][0] = 1;
+    exampleBoard[2][1] = 1;
+    exampleBoard[2][2] = 2;
+
+    // int exampleBoardSize = 2;
+    // exampleBoard.resize(exampleBoardSize, std::vector<int>(exampleBoardSize, 0));
+    // exampleBoard[0][1] = 1;
+    // exampleBoard[1][0] = 2;
+    // exampleBoard[1][1] = 2;
+
+    // FIXME: Currently getting zero resistance across board that is blocked by foe pieces
+
+    // Creating an index map, which will allow conversion between indeces of 1d and 2d array
+    for (int i = 0; i < exampleBoard.size(); i++)
+    {
+        for (int j = 0; j < exampleBoard.size(); j++)
+        {
+            indexMap.push_back({i, j});
+        }
+    }
+
+    std::cout << std::string(2 * 3 + 2, '-') << std::endl;
+    for (int i = 0; i < 3; i++)
+    {
+        std::cout << std::string(i, ' ');
+        std::cout << "\\ ";
+        for (int j = 0; j < 3; j++)
+        {
+            std::cout << exampleBoard[i][j] << " ";
+        }
+        std::cout << "\\" << std::endl;
+    }
+    std::cout << std::string(2, ' ');
+    std::cout << std::string(2 * 3 + 2, '-') << std::endl;
+
+    createAdjMat(exampleBoard);
+    reduceAdjMat();
+    createLaplacian();
+    // getResistanceDistance_tiles(std::make_pair(1, 1), std::make_pair(0, 1));
+    getResistanceDistance_board();
+}
+
+ResistanceDistance::~ResistanceDistance()
+{
+}
+
+int ResistanceDistance::fart()
+
+{
+
+    double zero = 1e-10;
+    double inf = 1e+10;
+
+    MatrixXd m(5, 5);
+    m(0, 1) = -1 / 1;
+    m(0, 2) = -1 / zero;
+    m(0, 3) = 0;
+    m(0, 4) = 0;
+    m(0, 0) = -(m(0, 1) + m(0, 2) + m(0, 3) + m(0, 4));
+
+    m(1, 0) = -1 / 1;
+    // Assignment comes after all other assignent
+    m(1, 2) = -1 / 1;
+    m(1, 3) = 0;
+    m(1, 4) = 0;
+    m(1, 1) = -(m(1, 0) + m(1, 2) + m(1, 3) + m(1, 4));
+
+    m(2, 0) = -1 / zero;
+    m(2, 1) = -1 / 1;
+    // Assignment comes after all other assignent
+
+    m(2, 3) = -1 / 1;
+    m(2, 4) = 0;
+    m(2, 2) = -(m(2, 0) + m(2, 1) + m(2, 3) + m(2, 4));
+
+    m(3, 0) = 0;
+    m(3, 1) = 0;
+    m(3, 2) = -1 / 1;
+    // Assignment comes after all other assignent
+    m(3, 4) = -1 / 1;
+    m(3, 3) = -(m(3, 0) + m(3, 1) + m(3, 2) + m(3, 4));
+
+    m(4, 0) = 0;
+    m(4, 1) = 0;
+    m(4, 2) = 0;
+    m(4, 3) = -1 / 1;
+    m(4, 4) = -(m(4, 0) + m(4, 1) + m(4, 2) + m(4, 3));
+
+    std::cout << "m" << std::endl;
+    std::cout << m << std::endl;
+
+    MatrixXd pinv = m.completeOrthogonalDecomposition().pseudoInverse();
+    std::cout << "m p inverse" << std::endl;
+    std::cout << pinv << std::endl;
+
+    int A = 0;
+    int B = m.cols() - 1;
+
+    std::cout << "Resistance distance between A and B is" << std::endl;
+    std::cout << pinv(A, A) + pinv(B, B) - pinv(A, B) - pinv(B, A) << std::endl;
+
+    return 0;
+};
+
+// Returns the 1D index of a search pair
+int ResistanceDistance::getOneDIndex(int i, int j)
+{
+    std::pair<int, int> searchPair = {i, j};
+    auto iterator = std::find(indexMap.begin(), indexMap.end(), searchPair);
+    if (iterator != indexMap.end())
+    {
+        int index = iterator - indexMap.begin();
+        return index;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+// Returns the 1D index of a search pair in the reduced index map
+int ResistanceDistance::getOneDIndex_Reduced(int i, int j)
+{
+    std::pair<int, int> searchPair = {i, j};
+    auto iterator = std::find(RedIndexMap.begin(), RedIndexMap.end(), searchPair);
+    if (iterator != RedIndexMap.end())
+    {
+        int index = iterator - RedIndexMap.begin();
+        return index;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+// Creates an adjacency matrix for a given board matrix
+// FIXME: Only works from red's perspective atm, getting it working is more important
+void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix)
+{
+    AdjMat.resize(int(pow(boardMatrix.size(), 2)) + 2, int(pow(boardMatrix.size(), 2)) + 2);
+    // Create adjacency matrix of correct size (plus two in each direction for permanent edge nodes) and populate it with -1 values
+    // MatrixXd AdjMat();
+
+    for (int i = 0; i < AdjMat.rows(); i++)
+    {
+        for (int j = 0; j < AdjMat.cols(); j++)
+        {
+            AdjMat(i, j) = -1;
+        }
+    }
+
+    // Iterate through board and set AdjMat values to correct weights between edges - only between board cells, permanent edge nodes come later (this worked on the first try and I don't want to touch it)
+    for (int i = 0; i < boardMatrix.size(); i++)
+    {
+        for (int j = 0; j < boardMatrix.size(); j++)
+        {
+            if (boardMatrix[i][j] != 2)
+            {
+                // Create vector of neighbour coordinates
+                neighbours.clear();
+                neighbours.push_back(std::make_pair(i - 1, j));
+                neighbours.push_back(std::make_pair(i - 1, j + 1));
+                neighbours.push_back(std::make_pair(i, j - 1));
+                neighbours.push_back(std::make_pair(i, j + 1));
+                neighbours.push_back(std::make_pair(i + 1, j - 1));
+                neighbours.push_back(std::make_pair(i + 1, j));
+
+                // Iterate through neighbours of the cell
+                for (auto &&neiPair : neighbours)
+                {
+                    // Only perform actions on valid cells
+                    if (0 <= neiPair.first && neiPair.first < boardMatrix.size() && 0 <= neiPair.second && neiPair.second < boardMatrix.size())
+                    {
+                        // Check if neighbour is not occupied by a foe
+                        if (boardMatrix[neiPair.first][neiPair.second] != 2)
+                        {
+                            // Edge weight holder
+                            int AdjValue = 0;
+
+                            // Check the value at the first node to the edge weight
+                            switch (boardMatrix[i][j])
+                            {
+                            case 0:
+                                AdjValue += 1;
+                                break;
+
+                            case 1:
+                                AdjValue += 0;
+                                break;
+                            }
+                            // Check the value at the second node to the edge weight
+                            switch (boardMatrix[neiPair.first][neiPair.second])
+                            {
+                            case 0:
+                                AdjValue += 1;
+                                break;
+
+                            case 1:
+                                AdjValue += 0;
+                                break;
+                            }
+
+                            AdjMat(getOneDIndex(neiPair.first, neiPair.second) + 1, getOneDIndex(i, j) + 1) = AdjValue;
+                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(neiPair.first, neiPair.second) + 1) = AdjValue;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Iterate over column space of board matrix, setting adjacency for permanent edge nodes
+    for (int j = 0; j < boardMatrix.size(); j++)
+    {
+        int AdjValue = 0;
+        if (boardMatrix[0][j] != 2)
+        {
+            switch (boardMatrix[0][j])
+            {
+            case 0:
+                AdjValue += 1;
+                break;
+
+            case 1:
+                AdjValue += 0;
+                break;
+            }
+            AdjMat(0, getOneDIndex(0, j) + 1) = AdjValue;
+            AdjMat(getOneDIndex(0, j) + 1, 0) = AdjValue;
+            AdjValue = 0;
+        }
+
+        if (boardMatrix[boardMatrix.size() - 1][j] != 2)
+        {
+            switch (boardMatrix[boardMatrix.size() - 1][j])
+            {
+            case 0:
+                AdjValue += 1;
+                break;
+
+            case 1:
+                AdjValue += 0;
+                break;
+            }
+            AdjMat(AdjMat.rows() - 1, getOneDIndex(boardMatrix.size() - 1, j) + 1) = AdjValue;
+            AdjMat(getOneDIndex(boardMatrix.size() - 1, j) + 1, AdjMat.rows() - 1) = AdjValue;
+        }
+    }
+
+    // std::cout << "Adjacency Matrix: " << std::endl;
+    // std::cout << AdjMat << std::endl;
+}
+
+// Removes columns and rows from the adjacency matrix so that it represents only the connected portion of the graph
+void ResistanceDistance::reduceAdjMat()
+{
+    emptyColIndeces.clear();
+
+    // Iterate over the columns of AdjMat
+    for (int j = 0; j < AdjMat.cols(); j++)
+    {
+        bool emptyCol = true;
+
+        // Iterate through column entries
+        for (int i = 0; i < AdjMat.rows(); i++)
+        {
+            // If any entry is non-empty, set the bool to false
+            if (AdjMat.col(j)[i] != -1)
+            {
+                emptyCol = false;
+            }
+        }
+
+        // Add empty column indeces to vector
+        if (emptyCol)
+        {
+            emptyColIndeces.push_back(j);
+        }
+    }
+
+    std::vector<int> colsToKeep;
+    for (int i = 0; i < AdjMat.cols(); i++)
+    {
+        if (!(std::count(emptyColIndeces.begin(), emptyColIndeces.end(), i)))
+        {
+            colsToKeep.push_back(i);
+        }
+    }
+
+    for (auto &&i : colsToKeep)
+    {
+        if (i != colsToKeep[0] && i != colsToKeep[colsToKeep.size() - 1])
+        {
+            RedIndexMap.push_back(indexMap[i - 1]);
+        }
+    }
+
+    RedAdjMat = AdjMat(colsToKeep, colsToKeep);
+    // std::cout << "Reduced matrix: " << std::endl;
+    // std::cout << RedAdjMat << std::endl;
+}
+
+void ResistanceDistance::createLaplacian()
+{
+    LaplacianMatrix.resize(RedAdjMat.rows(), RedAdjMat.cols());
+
+    double zero = 1e-10;
+
+    for (int row = 0; row < RedAdjMat.rows(); row++)
+    {
+        for (int col = 0; col < RedAdjMat.cols(); col++)
+        {
+            switch (int(RedAdjMat(row, col)))
+            {
+            case -1:
+                LaplacianMatrix(row, col) = 0;
+                break;
+            case 0:
+                LaplacianMatrix(row, col) = -1 / zero;
+                break;
+            case 1:
+                LaplacianMatrix(row, col) = -1 / 1;
+                break;
+            case 2:
+                LaplacianMatrix(row, col) = -1 / 2;
+                break;
+            default:
+                LaplacianMatrix(row, col) = 0;
+                break;
+            }
+        }
+    }
+
+    for (int row = 0; row < LaplacianMatrix.rows(); row++)
+    {
+        double rowSum = 0.0;
+        for (int col = 0; col < LaplacianMatrix.cols(); col++)
+        {
+            if (col != row)
+            {
+                rowSum += LaplacianMatrix(row, col);
+            }
+        }
+        LaplacianMatrix(row, row) = -rowSum;
+    }
+
+    // std::cout << "Laplacian: " << std::endl;
+    // std::cout << LaplacianMatrix << std::endl;
+}
+
+int ResistanceDistance::getResistanceDistance_tiles(std::pair<int, int> tileA, std::pair<int, int> tileB)
+{
+    MatrixXd Linv = LaplacianMatrix.completeOrthogonalDecomposition().pseudoInverse();
+    // std::cout << "L p inverse" << std::endl;
+    // std::cout << Linv << std::endl;
+
+    // int A = 0;
+    // int B = LaplacianMatrix.cols() - 1;
+
+    if (getOneDIndex_Reduced(tileA.first, tileA.second) == -1 || getOneDIndex_Reduced(tileB.first, tileB.second) == -1)
+    {
+        std::cout << "Tiles cannot be connected, one or both of them is occupied by a foe" << std::endl;
+        return 0;
+    }
+    else
+    {
+        int A = getOneDIndex_Reduced(tileA.first, tileA.second) + 1;
+        int B = getOneDIndex_Reduced(tileB.first, tileB.second) + 1;
+
+        std::cout << "Resistance distance between (" << tileA.first << ", " << tileA.second << ") and (" << tileB.first << ", " << tileB.second << ") is:" << std::endl;
+        std::cout << Linv(A, A) + Linv(B, B) - Linv(A, B) - Linv(B, A) << std::endl;
+
+        return 0;
+    }
+}
+
+int ResistanceDistance::getResistanceDistance_board()
+{
+    MatrixXd Linv = LaplacianMatrix.completeOrthogonalDecomposition().pseudoInverse();
+    // std::cout << "L p inverse" << std::endl;
+    // std::cout << Linv << std::endl;
+
+    int A = 0;
+    int B = LaplacianMatrix.cols() - 1;
+
+    float ResistanceDistanceValue = Linv(A, A) + Linv(B, B) - Linv(A, B) - Linv(B, A);
+
+    std::cout << "Resistance distance over the board is: " << std::endl;
+    std::cout << ResistanceDistanceValue << std::endl;
+
+    return 0;
+}
+
+
+26/02/24
+
+Patching up resistance distance calculation, got rid of a lot of for loops to be replaced with operations only on the necessary elements of the arrays. After doing this for the laplacian the rowsum calculation was done assuming the diagonal entries would all be 0, which is not necessarily true if it is not the first time the matrix has been modified. Simple fix is to subtract the diagonal term from the rowsum (duh)
+
+Oh also minimax finally worked, heres the lump of shit that didn't work// std::pair<float, std::vector<std::vector<int>>> MiniMax::doTheThing(std::vector<std::vector<int>> boardMatrix, int depth, float alpha, float beta, bool maximisingPlayer)
+// {
+//     std::cout << "Called on board: " << std::endl;
+//     printChild(boardMatrix);
+
+//     // FIXME: find a way to return the best move
+//     if (depth == 0) // FIXME: Add if game over check
+//     {
+//         return std::make_pair(evaluateBoard(boardMatrix), boardMatrix);
+//     }
+
+//     if (maximisingPlayer)
+//     {
+//         std::cout << "Called Max" << std::endl;
+//         createChildren(boardMatrix, 1); // Change player code when actually doing things
+//         float maxEval = -std::numeric_limits<float>::infinity();
+//         for (int i = 0; i < childStates.size(); i++)
+//         {
+//             state.clear();
+//             state = childStates[i];
+
+//             auto [eval, returnedState] = doTheThing(state, depth - 1, alpha, beta, false);
+
+//             if (eval > maxEval)
+//             {
+//                 maxEval = eval;
+//                 if (depth == 3)
+//                 {
+//                     bestState = state;
+//                 }
+//             }
+
+//             // maxEval = std::max(eval, maxEval);
+//             alpha = std::max(alpha, eval);
+//             if (beta <= alpha)
+//             {
+//                 break;
+//             }
+//         }
+//         return std::make_pair(maxEval, bestState);
+//     }
+//     else
+//     {
+//         std::cout << "Called Min" << std::endl;
+//         createChildren(boardMatrix, 2); // Change player code when actually doing things
+//         float minEval = std::numeric_limits<float>::infinity();
+//         for (int i = 0; i < childStates.size(); i++)
+//         {
+//             state.clear();
+//             state = childStates[i];
+
+//             auto [eval, returnedState] = doTheThing(state, depth - 1, alpha, beta, true);
+
+//             if (eval <= minEval)
+//             {
+//                 minEval = eval;
+//                 if (depth == 3)
+//                 {
+//                     bestState = state;
+//                 }
+//             }
+//             // minEval = std::min(eval, minEval);
+//             beta = std::min(beta, eval);
+//             if (beta <= alpha)
+//             {
+//                 break;
+//             }
+//         }
+//         return std::make_pair(minEval, bestState);
+//     }
+// }
