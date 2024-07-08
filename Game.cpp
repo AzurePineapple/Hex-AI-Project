@@ -6,9 +6,12 @@ Game::Game(int size)
     handler->init();
 
     Board *gameBoard = new Board(size, 2);
+
+    // MCTS
+
     // Opponent (player or test) First
-    one.createPlayer("human", 1);
-    two.createPlayer("computer", 2, "MCTS", size, true);
+    // one.createPlayer("human", 1);
+    // two.createPlayer("computer", 2, "MCTS", size, true);
     // AI First
     // one.createPlayer("computer", 1, "MCTS", size, true);
     // two.createPlayer("human", 2);
@@ -19,6 +22,10 @@ Game::Game(int size)
     // // Self play testing - PP first
     // one.createPlayer("computer", 1, "MCTS", size, true);
     // two.createPlayer("computer", 2, "MCTS", size, false);
+
+    // Minimax
+    one.createPlayer("human", 1);
+    two.createPlayer("computer", 2, "minimax", size, false, 2);
 
     players.first = &one;
     players.second = &two;

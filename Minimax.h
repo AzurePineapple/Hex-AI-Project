@@ -31,9 +31,9 @@ public:
 
     std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth);
 
-    std::pair<int, int> go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn);
+    std::pair<int, int> go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth);
 
-    std::vector<std::pair<int, int>> generateMoves(std::vector<std::vector<int>> boardMatrix);
+    std::vector<std::pair<int, int>> generateMoves(const std::vector<std::vector<int>> &boardMatrix);
 
     bool isTerminal(const std::vector<std::vector<int>> &boardMatrix);
 };

@@ -61,23 +61,23 @@ int main(int argv, char **args)
 
     // For testing MiniMax
 
-    std::vector<std::vector<int>> board;
-    board.resize(3, std::vector<int>(3, 0));
-    // board[0][0] = 0;
-    // board[0][1] = 0;
-    // board[0][2] = 0;
-    // board[1][0] = 0;
-    // board[1][1] = 0;
-    // board[1][2] = 0;
-    // board[2][0] = 0;
-    // board[2][1] = 0;
-    // board[2][2] = 0;
-    MiniMax *test = new MiniMax();
-    test->go(board, true);
+    // std::vector<std::vector<int>> board;
+    // board.resize(3, std::vector<int>(3, 0));
+    // // board[0][0] = 0;
+    // // board[0][1] = 0;
+    // // board[0][2] = 0;
+    // // board[1][0] = 0;
+    // // board[1][1] = 0;
+    // // board[1][2] = 0;
+    // // board[2][0] = 0;
+    // // board[2][1] = 0;
+    // // board[2][2] = 0;
+    // MiniMax *test = new MiniMax();
+    // test->go(board, true);
 
     // For testing entire game loop
 
-    // Game *newGame = new Game(9);
+    Game *newGame = new Game(9);
 
     return 0;
 }

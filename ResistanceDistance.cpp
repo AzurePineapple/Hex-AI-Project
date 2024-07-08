@@ -12,9 +12,11 @@ ResistanceDistance::~ResistanceDistance()
 
 float ResistanceDistance::evaluate(std::vector<std::vector<int>> boardMatrix, int i = -1, int j = -1)
 {
+    //
+
     // if (!AdjMatInitialised)
     // {
-    return evaluateBoard(boardMatrix);
+    //     return evaluateBoard(boardMatrix);
     // }
     // else
     // {
@@ -25,10 +27,13 @@ float ResistanceDistance::evaluate(std::vector<std::vector<int>> boardMatrix, in
 
     //     return evaluateMove(boardMatrix, i, j);
     // }
+
+    return evaluateBoard(boardMatrix);
 }
 
 float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatrix)
 {
+    auto start = std::chrono::high_resolution_clock::now();
     for (size_t i = 0; i < boardMatrix.size(); i++)
     {
         for (size_t j = 0; j < boardMatrix.size(); j++)
@@ -36,14 +41,32 @@ float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatri
             indexMap.push_back({i, j});
         }
     }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Timing indexMap creation" << std::endl;
+    std::cout << "Took: " << duration.count() << " microseconds" << std::endl;
 
-    // createAdjMatOld(boardMatrix);
+    auto start2 = std::chrono::high_resolution_clock::now();
     createAdjMatNew(boardMatrix);
+    auto stop2 = std::chrono::high_resolution_clock::now();
+    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop2 - start2);
+    std::cout << "Timing AdjMat" << std::endl;
+    std::cout << "Took: " << duration2.count() << " microseconds" << std::endl;
 
-    // createLaplacianOld();
+    auto start3 = std::chrono::high_resolution_clock::now();
     createLaplacianNew();
+    auto stop3 = std::chrono::high_resolution_clock::now();
+    auto duration3 = std::chrono::duration_cast<std::chrono::microseconds>(stop3 - start3);
+    std::cout << "Timing Laplacian" << std::endl;
+    std::cout << "Took: " << duration3.count() << " microseconds" << std::endl;
 
-    return getResistanceDistance_board();
+    auto start4 = std::chrono::high_resolution_clock::now();
+    auto a = getResistanceDistance_board();
+    auto stop4 = std::chrono::high_resolution_clock::now();
+    auto duration4 = std::chrono::duration_cast<std::chrono::microseconds>(stop4 - start4);
+    std::cout << "Timing resistance calculation" << std::endl;
+    std::cout << "Took: " << duration4.count() << " microseconds" << std::endl;
+    return a;
 }
 
 float ResistanceDistance::evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j)

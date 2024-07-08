@@ -10,10 +10,8 @@ MiniMax::~MiniMax()
 {
 }
 
-std::pair<int, int> MiniMax::go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn)
+std::pair<int, int> MiniMax::go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth)
 {
-    int depth = 5;
-
     auto start = std::chrono::high_resolution_clock::now();
     auto bestMovePair = findBestMove(boardMatrix, blacksTurn, depth);
     auto stop = std::chrono::high_resolution_clock::now();
@@ -25,17 +23,19 @@ std::pair<int, int> MiniMax::go(std::vector<std::vector<int>> boardMatrix, bool 
     return bestMovePair;
 }
 
-std::vector<std::pair<int, int>> MiniMax::generateMoves(std::vector<std::vector<int>> boardMatrix)
+std::vector<std::pair<int, int>> MiniMax::generateMoves(const std::vector<std::vector<int>> &boardMatrix)
 {
     int boardSize = boardMatrix.size();
     std::vector<std::pair<int, int>> availableMoves;
-    for (int i = 0; i < boardSize; i++)
+    availableMoves.reserve(boardSize * boardSize); // Reserve maximum possible space
+
+    for (int i = 0; i < boardSize; ++i)
     {
-        for (int j = 0; j < boardSize; j++)
+        for (int j = 0; j < boardSize; ++j)
         {
             if (boardMatrix[i][j] == 0)
             {
-                availableMoves.push_back(std::make_pair(i, j));
+                availableMoves.emplace_back(i, j);
             }
         }
     }
@@ -59,11 +59,6 @@ void MiniMax::createChildren(std::vector<std::vector<int>> boardMatrix, int play
             }
         }
     }
-}
-
-float MiniMax::evaluateBoard(std::vector<std::vector<int>> boardMatrix, int i, int j, bool blacksTurn)
-{
-    return Evaluator->evaluate(boardMatrix, i, j);
 }
 
 void MiniMax::printChildren()
@@ -107,13 +102,10 @@ void MiniMax::printChild(std::vector<std::vector<int>> board)
 
 float MiniMax::recurse(std::vector<std::vector<int>> boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y)
 {
-    float score = evaluateBoard(boardMatrix, x, y, blacksTurn);
-
+    float score = Evaluator->evaluate(boardMatrix);
+    
     if (depth == 0 || isTerminal(boardMatrix))
     {
-        // std::cout << "Score for given state: " << std::endl;
-        // printChild(boardMatrix);
-        // std::cout << score << std::endl;
         return score;
     }
 
@@ -141,7 +133,6 @@ float MiniMax::recurse(std::vector<std::vector<int>> boardMatrix, int depth, boo
             // Alpha beta pruning
             if (beta <= alpha)
             {
-                // std::cout << "Pruned tile " << i << ", " << j << "at depth " << depth << std::endl;
                 break;
             }
         }
@@ -172,7 +163,6 @@ float MiniMax::recurse(std::vector<std::vector<int>> boardMatrix, int depth, boo
             // Alpha beta pruning
             if (beta <= alpha)
             {
-                //  std::cout << "Pruned tile " << i << ", " << j << "at depth " << depth << std::endl;
                 break;
             }
         }
@@ -205,7 +195,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
             // Get the evaluation function of the move
             float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second);
-            // std::cout << "[" << move.first << "][" << move.second << "] has best score: " << moveVal << std::endl;
+
             // undo the move
             boardMatrix[move.first][move.second] = 0;
 
@@ -220,6 +210,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
                 // std::cout << "New best score:" << std::endl;
                 // std::cout << bestVal << std::endl;
             }
+            std::cout << "Finished evaluating a move" << std::endl;
         }
     }
 
@@ -253,6 +244,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
         }
     }
 
+    // Print the best calculated board scores
     for (size_t i = 0; i < boardScores.size(); i++)
     {
         for (size_t j = 0; j < boardScores.size(); j++)

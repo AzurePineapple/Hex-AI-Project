@@ -1,5 +1,5 @@
 # Which compiler to use
-CC = g++ -g -Wall -Wextra
+CC = g++ -g -Wall #-Wextra
 
 # INCLUDE_PATHS specifies the additional include paths we'll need
 INCLUDE_PATHS = -I src/include
