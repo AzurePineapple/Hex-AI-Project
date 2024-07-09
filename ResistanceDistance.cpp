@@ -10,7 +10,7 @@ ResistanceDistance::~ResistanceDistance()
 {
 }
 
-float ResistanceDistance::evaluate(std::vector<std::vector<int>> boardMatrix, int i = -1, int j = -1)
+float ResistanceDistance::evaluate(const std::vector<std::vector<int>> &boardMatrix, int i = -1, int j = -1)
 {
     //
 
@@ -1349,9 +1349,6 @@ float ResistanceDistance::getResistanceDistance_board()
 // Alternative method for calculating the resistance distance given in "A Simple Method for Computing Resistance Distance by Ravindra B. Bapat, Ivan Gutmana,b, and Wenjun Xiaob"
 float ResistanceDistance::alternateResistanceDistance()
 {
-    // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
-    // Laplacian with the ith and jth columns/rows removed respectively
-
     // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
     // Laplacian with the ith and jth columns/rows removed respectively
 

@@ -176,7 +176,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
 std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth)
 {
     std::vector<std::vector<float>> boardScores;
-    boardScores.resize(boardMatrix.size(), std::vector<float>(boardMatrix.size(), 100000));
+    boardScores.resize(boardMatrix.size(), std::vector<float>(boardMatrix.size(), 9999999));
 
     float alpha = -std::numeric_limits<float>::infinity();
     float beta = std::numeric_limits<float>::infinity();
@@ -184,6 +184,9 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
     bestMove = std::make_pair(-1, -1);
 
     std::vector<std::pair<int, int>> availableMoves = generateMoves(boardMatrix);
+    std::vector<std::pair<int, int>> bestMoves;
+
+    // TODO: IF eval is >~6, is winning move, so select it and break?
 
     if (blacksTurn)
     {
@@ -204,11 +207,15 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             boardScores[move.first][move.second] = moveVal;
 
             // If move value is better than previous, update best values
-            if (moveVal <= bestVal)
+            if (moveVal < bestVal)
             {
-                bestMove.first = move.first;
-                bestMove.second = move.second;
+                bestMoves.clear();
+                bestMoves.push_back(move);
                 bestVal = moveVal;
+            }
+            else if (moveVal == bestVal)
+            {
+                bestMoves.push_back(move);
             }
             std::cout << "Finished evaluating a move" << std::endl;
         }
@@ -235,15 +242,24 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             boardScores[move.first][move.second] = moveVal;
 
             // If move value is better than previous, update best values
-            if (moveVal >= bestVal)
+            if (moveVal > bestVal)
             {
-                bestMove.first = move.first;
-                bestMove.second = move.second;
+                bestMoves.clear();
+                bestMoves.push_back(move);
                 bestVal = moveVal;
-                // std::cout << "New best score:" << std::endl;
-                // std::cout << bestVal << std::endl;
+            }
+            else if (moveVal == bestVal)
+            {
+                bestMoves.push_back(move);
             }
         }
+    }
+
+    // Select a random move from the bestMoves vector
+    if (!bestMoves.empty())
+    {
+        srand(time(0));
+        bestMove = bestMoves[rand() % bestMoves.size()];
     }
 
     // Print the best calculated board scores

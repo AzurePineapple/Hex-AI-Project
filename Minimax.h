@@ -3,6 +3,8 @@
 #include <limits>
 #include <time.h>
 #include "ResistanceDistance.cpp"
+#include <ctime>
+#include <random>
 
 class MiniMax
 {
