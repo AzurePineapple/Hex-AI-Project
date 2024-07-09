@@ -100,12 +100,12 @@ void MiniMax::printChild(std::vector<std::vector<int>> board)
     std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
 }
 
-float MiniMax::recurse(std::vector<std::vector<int>> boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y)
+float MiniMax::recurse(std::vector<std::vector<int>>& boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y)
 {
-    float score = Evaluator->evaluate(boardMatrix);
-    
+
     if (depth == 0 || isTerminal(boardMatrix))
     {
+        float score = Evaluator->evaluate(boardMatrix);
         return score;
     }
 
@@ -175,7 +175,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> boardMatrix, int depth, boo
 std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth)
 {
     std::vector<std::vector<float>> boardScores;
-    boardScores.resize(boardMatrix.size(), std::vector<float>(boardMatrix.size(), 0.0));
+    boardScores.resize(boardMatrix.size(), std::vector<float>(boardMatrix.size(), 100000));
 
     float alpha = -std::numeric_limits<float>::infinity();
     float beta = std::numeric_limits<float>::infinity();
@@ -195,6 +195,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
             // Get the evaluation function of the move
             float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second);
+            std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
 
             // undo the move
             boardMatrix[move.first][move.second] = 0;
@@ -207,8 +208,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
                 bestMove.first = move.first;
                 bestMove.second = move.second;
                 bestVal = moveVal;
-                // std::cout << "New best score:" << std::endl;
-                // std::cout << bestVal << std::endl;
             }
             std::cout << "Finished evaluating a move" << std::endl;
         }
@@ -226,7 +225,8 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
             // Get the evaluation function of the move
             float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second);
-            // std::cout << "[" << move.first << "][" << move.second << "] has best score: " << moveVal << std::endl;
+
+            std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
             // undo the move
             boardMatrix[move.first][move.second] = 0;
 

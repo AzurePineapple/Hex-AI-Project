@@ -33,7 +33,7 @@ int main(int argv, char **args)
 
     // For testing Evaluation function
     // std::vector<std::vector<int>> boardMatrix;
-    // boardMatrix.resize(3, std::vector<int>(3, 0));
+    // boardMatrix.resize(11, std::vector<int>(11, 0));
 
     // int boardSize = boardMatrix.size();
     // // boardMatrix[1][1] = 1;

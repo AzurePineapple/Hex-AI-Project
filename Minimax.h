@@ -27,7 +27,7 @@ public:
 
     // std::pair<float, std::vector<std::vector<int>>> doTheThing(std::vector<std::vector<int>> boardMatrix, int depth, float alpha, float beta, bool maximisingPlayer);
 
-    float recurse(std::vector<std::vector<int>> boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y);
+    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y);
 
     std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth);
 

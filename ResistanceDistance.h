@@ -48,8 +48,6 @@ public:
     ResistanceDistance(/* args */);
     ~ResistanceDistance();
 
-    int fart();
-
     float evaluate(std::vector<std::vector<int>> boardMatrix, int i, int j);
     float evaluateBoard(std::vector<std::vector<int>> boardMatrix);
     float evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j);
@@ -70,4 +68,6 @@ public:
 
     int getResistanceDistance_tiles(std::pair<int, int> tileA, std::pair<int, int> tileB);
     float getResistanceDistance_board();
+    float alternateResistanceDistance();
+    MatrixXd pseudoInverse(const MatrixXd &M);
 };

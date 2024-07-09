@@ -33,7 +33,7 @@ float ResistanceDistance::evaluate(std::vector<std::vector<int>> boardMatrix, in
 
 float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatrix)
 {
-    auto start = std::chrono::high_resolution_clock::now();
+
     for (size_t i = 0; i < boardMatrix.size(); i++)
     {
         for (size_t j = 0; j < boardMatrix.size(); j++)
@@ -41,32 +41,13 @@ float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatri
             indexMap.push_back({i, j});
         }
     }
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Timing indexMap creation" << std::endl;
-    std::cout << "Took: " << duration.count() << " microseconds" << std::endl;
 
-    auto start2 = std::chrono::high_resolution_clock::now();
     createAdjMatNew(boardMatrix);
-    auto stop2 = std::chrono::high_resolution_clock::now();
-    auto duration2 = std::chrono::duration_cast<std::chrono::microseconds>(stop2 - start2);
-    std::cout << "Timing AdjMat" << std::endl;
-    std::cout << "Took: " << duration2.count() << " microseconds" << std::endl;
 
-    auto start3 = std::chrono::high_resolution_clock::now();
     createLaplacianNew();
-    auto stop3 = std::chrono::high_resolution_clock::now();
-    auto duration3 = std::chrono::duration_cast<std::chrono::microseconds>(stop3 - start3);
-    std::cout << "Timing Laplacian" << std::endl;
-    std::cout << "Took: " << duration3.count() << " microseconds" << std::endl;
 
-    auto start4 = std::chrono::high_resolution_clock::now();
-    auto a = getResistanceDistance_board();
-    auto stop4 = std::chrono::high_resolution_clock::now();
-    auto duration4 = std::chrono::duration_cast<std::chrono::microseconds>(stop4 - start4);
-    std::cout << "Timing resistance calculation" << std::endl;
-    std::cout << "Took: " << duration4.count() << " microseconds" << std::endl;
-    return a;
+    // return getResistanceDistance_board();
+    return alternateResistanceDistance();
 }
 
 float ResistanceDistance::evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j)
@@ -1327,51 +1308,112 @@ int ResistanceDistance::getResistanceDistance_tiles(std::pair<int, int> tileA, s
 
 float ResistanceDistance::getResistanceDistance_board()
 {
-    MatrixXd Linv = LaplacianMatrix.completeOrthogonalDecomposition().pseudoInverse();
+    // Difference between old method and new method of calculating Linv has elements of order of magnitude 10^-15 to -17, close enough that they are to be treated as identical
+    // MatrixXd Linv = LaplacianMatrix.completeOrthogonalDecomposition().pseudoInverse();
+    MatrixXd Linv = pseudoInverse(LaplacianMatrix);
 
     int A = 0;
     int B = LaplacianMatrix.cols() - 1;
 
     // This value decreases as the board gets easier to connect, i.e better for black
-    float ResistanceDistanceValue = Linv(A, A) + Linv(B, B) - Linv(A, B) - Linv(B, A);
-    float ResistanceDistanceValue2 = Linv(A, A) + Linv(B, B) - 2 * Linv(A, B);
+    // First equation holds for any generalise inverse, second for moore-penrose. Both we implemented to confirm matrix is actually a M-P
+    // float ResistanceDistanceValue = Linv(A, A) + Linv(B, B) - Linv(A, B) - Linv(B, A);
+    float ResistanceDistanceValue = Linv(A, A) + Linv(B, B) - 2 * Linv(A, B);
 
-    if (ResistanceDistanceValue != ResistanceDistanceValue2)
-    {
-        std::cout << "Equation discepancy! Laplacian one" << std::endl;
-    }
-
-    // Hacky way of detecting black win, should return highest possible score
-    if (ResistanceDistanceValue < 1e-9)
-    {
-        return std::numeric_limits<float>::infinity();
-    }
+    // // Hacky way of detecting black win, should return highest possible score
+    // if (ResistanceDistanceValue < 1e-9)
+    // {
+    //     return std::numeric_limits<float>::infinity();
+    // }
 
     // Player two
-    MatrixXd Linv_two = LaplacianMatrix_two.completeOrthogonalDecomposition().pseudoInverse();
-
-    A = 0;
-    B = LaplacianMatrix_two.cols() - 1;
+    // MatrixXd Linv_two = LaplacianMatrix_two.completeOrthogonalDecomposition().pseudoInverse();
+    MatrixXd Linv_two = pseudoInverse(LaplacianMatrix_two);
 
     // This value decreases as white's position get's better
-    float ResistanceDistanceValue_two = Linv_two(A, A) + Linv_two(B, B) - Linv_two(A, B) - Linv_two(B, A);
-    float ResistanceDistanceValue_two2 = Linv_two(A, A) + Linv_two(B, B) - 2 * Linv_two(A, B);
+    // float ResistanceDistanceValue_two = Linv_two(A, A) + Linv_two(B, B) - Linv_two(A, B) - Linv_two(B, A);
+    float ResistanceDistanceValue_two = Linv_two(A, A) + Linv_two(B, B) - 2 * Linv_two(A, B);
 
-    if (ResistanceDistanceValue_two != ResistanceDistanceValue_two2)
-    {
-        std::cout << "Equation discepancy! Laplacian two" << std::endl;
-    }
-
-    // Hacky way of detecting white win, should return lowest possible score
-    if (ResistanceDistanceValue_two < 1e-9)
-    {
-        return -std::numeric_limits<float>::infinity();
-    }
+    // // Hacky way of detecting white win, should return lowest possible score
+    // if (ResistanceDistanceValue_two < 1e-9)
+    // {
+    //     return -std::numeric_limits<float>::infinity();
+    // }
 
     // White wants to maximise, Black wants to minimise
     float boardScore = log(ResistanceDistanceValue / ResistanceDistanceValue_two);
 
     return boardScore;
+}
+
+// Alternative method for calculating the resistance distance given in "A Simple Method for Computing Resistance Distance by Ravindra B. Bapat, Ivan Gutmana,b, and Wenjun Xiaob"
+float ResistanceDistance::alternateResistanceDistance()
+{
+    // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
+    // Laplacian with the ith and jth columns/rows removed respectively
+
+    // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
+    // Laplacian with the ith and jth columns/rows removed respectively
+
+    // Create vector of column integers to keep in the submatrix
+    std::vector<int> columnsToKeep;
+    for (int i = 0; i < LaplacianMatrix.cols(); i++)
+    {
+        columnsToKeep.push_back(i);
+    }
+
+    // Remove the first integer to remove the first column, creating L_i for both players
+    columnsToKeep.erase(columnsToKeep.begin());
+    MatrixXd L_i = LaplacianMatrix(columnsToKeep, columnsToKeep);
+    MatrixXd L2_i = LaplacianMatrix_two(columnsToKeep, columnsToKeep);
+    // Next remove the last, to create L_ij for both players
+    columnsToKeep.erase(columnsToKeep.end() - 1);
+    MatrixXd L_ij = LaplacianMatrix(columnsToKeep, columnsToKeep);
+    MatrixXd L2_ij = LaplacianMatrix_two(columnsToKeep, columnsToKeep);
+
+    // Player one
+    // Compute determinants
+    float det_L_i = L_i.determinant();
+    float det_L_ij = L_ij.determinant();
+
+    // Compute resistance distance
+    float r_ij = det_L_ij / det_L_i;
+
+    // Player two
+    // Compute determinants
+    float det_L2_i = L2_i.determinant();
+    float det_L2_ij = L2_ij.determinant();
+
+    // Compute resistance distance
+    float r2_ij = det_L2_ij / det_L2_i;
+
+    float boardScore = log(r_ij / r2_ij);
+    return boardScore;
+}
+
+MatrixXd ResistanceDistance::pseudoInverse(const MatrixXd &M)
+{
+    Eigen::JacobiSVD<MatrixXd> svd(M, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Eigen::VectorXd singularValues = svd.singularValues();
+    Eigen::VectorXd singularValues_inv = singularValues;
+
+    // Calculate the reciprocal of singular values, setting low values to zero
+    for (int i = 0; i < singularValues.size(); i++)
+    {
+        if (singularValues(i) > 1e-10)
+        {
+            singularValues_inv(i) = 1.0 / singularValues(i);
+        }
+        else
+        {
+            singularValues_inv(i) = 0;
+        }
+    }
+
+    // Construct the vector as a diagonal matrix
+    MatrixXd S_inv = singularValues_inv.asDiagonal();
+
+    return svd.matrixV() * S_inv * svd.matrixU().transpose();
 }
 
 void ResistanceDistance::printChild(std::vector<std::vector<int>> board)
