@@ -25,7 +25,7 @@ Game::Game(int size)
 
     // Minimax
     one.createPlayer("human", 1);
-    two.createPlayer("computer", 2, "minimax", size, false, 2);
+    two.createPlayer("computer", 2, "minimax", size, false, 3);
 
     players.first = &one;
     players.second = &two;
