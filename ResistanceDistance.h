@@ -5,6 +5,7 @@
 #include <iostream>
 #include <limits>
 #include <math.h>
+#include <omp.h>
 using Eigen::MatrixXd;
 
 class ResistanceDistance

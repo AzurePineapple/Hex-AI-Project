@@ -47,7 +47,14 @@ float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatri
     createLaplacianNew();
 
     // return getResistanceDistance_board();
-    return alternateResistanceDistance();
+    auto start = std::chrono::high_resolution_clock::now();
+    auto b = alternateResistanceDistance();
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+    std::cout << "Timing determinant calc" << std::endl;
+    std::cout << "Took: " << duration.count() << " microseconds" << std::endl;
+
+    return b;
 }
 
 float ResistanceDistance::evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j)
@@ -68,7 +75,6 @@ float ResistanceDistance::evaluateMove(std::vector<std::vector<int>> boardMatrix
 }
 
 // Returns the 1D index of a search pair
-// FIXME: Look at implementing a Map, may be faster
 int ResistanceDistance::getOneDIndex(int i, int j)
 {
     std::pair<int, int> searchPair = {i, j};
@@ -1368,26 +1374,46 @@ float ResistanceDistance::alternateResistanceDistance()
     MatrixXd L_ij = LaplacianMatrix(columnsToKeep, columnsToKeep);
     MatrixXd L2_ij = LaplacianMatrix_two(columnsToKeep, columnsToKeep);
 
-    // Player one
-    // Compute determinants
-    float det_L_i = L_i.determinant();
-    float det_L_ij = L_ij.determinant();
+    // Old sequential method, very slow ~30,000microseconds on 11x11 board
+    // float det_L_i = L_i.determinant();
+    // float det_L_ij = L_ij.determinant();
+    // float det_L2_i = L2_i.determinant();
+    // float det_L2_ij = L2_ij.determinant();
+
+    // New parallel processing method, performs the four calculations simultaneously.
+    float det_L_i, det_L_ij, det_L2_i, det_L2_ij;
+#pragma omp parallel sections
+    {
+        // Player one
+        // Compute determinants
+#pragma omp section
+        {
+            det_L_i = L_i.determinant();
+        }
+#pragma omp section
+        {
+            det_L_ij = L_ij.determinant();
+        }
+// Player two
+// Compute determinants
+#pragma omp section
+        {
+            det_L2_i = L2_i.determinant();
+        }
+#pragma omp section
+        {
+            det_L2_ij = L2_ij.determinant();
+        }
+    }
 
     // Compute resistance distance
     float r_ij = det_L_ij / det_L_i;
-
-    // Player two
-    // Compute determinants
-    float det_L2_i = L2_i.determinant();
-    float det_L2_ij = L2_ij.determinant();
-
     // Compute resistance distance
     float r2_ij = det_L2_ij / det_L2_i;
 
     float boardScore = log(r_ij / r2_ij);
     return boardScore;
 }
-
 MatrixXd ResistanceDistance::pseudoInverse(const MatrixXd &M)
 {
     Eigen::JacobiSVD<MatrixXd> svd(M, Eigen::ComputeThinU | Eigen::ComputeThinV);
