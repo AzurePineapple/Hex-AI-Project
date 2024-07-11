@@ -5,6 +5,7 @@
 #include "ResistanceDistance.cpp"
 #include <ctime>
 #include <random>
+#include <map>
 
 class MiniMax
 {
@@ -16,6 +17,8 @@ private:
     std::vector<std::vector<std::vector<int>>> bestStatePath;
 
     ResistanceDistance *Evaluator = new ResistanceDistance();
+
+    std::map<std::vector<std::vector<int>>, float> scoresMap;
 
 public:
     MiniMax();

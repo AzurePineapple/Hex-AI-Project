@@ -201,7 +201,7 @@ void Board::createBoard(int screenwidth)
     int radius = screenwidth / (2 * requiredWidth);
 
     // Hacky way to reduce size of radius on smaller boards
-    if (boardSize <= 7)
+    if (boardSize < 7)
     {
         radius = radius * 0.8;
     }

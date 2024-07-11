@@ -106,8 +106,20 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
     if (depth == 0 || isTerminal(boardMatrix))
     {
         *noEvaluations += 1;
-        float score = Evaluator->evaluate(boardMatrix);
-        return score;
+
+        // Search the cache to see if the board state has been evaluated
+        auto it = scoresMap.find(boardMatrix);
+        if (it != scoresMap.end())
+        {
+            std::cout << "Retrieved cached score!" << std::endl;
+            return it->second;
+        }
+        else
+        {
+            float score = Evaluator->evaluate(boardMatrix, x, y);
+            scoresMap[boardMatrix] = score;
+            return score;
+        }
     }
 
     std::vector<std::pair<int, int>> availableMoves = generateMoves(boardMatrix);

@@ -1387,8 +1387,8 @@ float ResistanceDistance::alternateResistanceDistance()
         {
             det_L_ij = L_ij.determinant();
         }
-// Player two
-// Compute determinants
+        // Player two
+        // Compute determinants
 #pragma omp section
         {
             det_L2_i = L2_i.determinant();
@@ -1397,6 +1397,18 @@ float ResistanceDistance::alternateResistanceDistance()
         {
             det_L2_ij = L2_ij.determinant();
         }
+    }
+
+    // If det_L_i is 0, it means there are no spanning trees for the graph, which means that the graph has been cut in two by the opponent. So we need to return the corresponding board score remembering that white is MAX and black is MIN
+    if (det_L_i == 0)
+    {
+        // This is blacks graph, so if it has 0 spanning trees then white has won, so return +inf
+        return std::numeric_limits<float>::infinity();
+    }
+    if (det_L2_i == 0)
+    {
+        // Vice Versa
+        return -std::numeric_limits<float>::infinity();
     }
 
     // Compute resistance distance
