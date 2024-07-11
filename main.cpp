@@ -77,7 +77,7 @@ int main(int argv, char **args)
 
     // For testing entire game loop
 
-    Game *newGame = new Game(11);
+    Game *newGame = new Game(5);
 
     return 0;
 }

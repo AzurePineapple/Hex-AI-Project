@@ -47,14 +47,7 @@ float ResistanceDistance::evaluateBoard(std::vector<std::vector<int>> boardMatri
     createLaplacianNew();
 
     // return getResistanceDistance_board();
-    auto start = std::chrono::high_resolution_clock::now();
-    auto b = alternateResistanceDistance();
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Timing determinant calc" << std::endl;
-    std::cout << "Took: " << duration.count() << " microseconds" << std::endl;
-
-    return b;
+    return alternateResistanceDistance();
 }
 
 float ResistanceDistance::evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j)

@@ -47,6 +47,10 @@ Board::Board(int size, int ColourPairChoice)
     boardMatrix.resize(boardSize, std::vector<int>(boardSize, 0));
 
     // Insert position offsets into map
+    offsets.insert({3, {198, 40}});
+    offsets.insert({5, {203, 72}});
+    offsets.insert({7, {88, 10}});
+    offsets.insert({9, {89, 17}});
     offsets.insert({11, {86, 23}});
     offsets.insert({13, {97, 29}});
 
@@ -195,6 +199,12 @@ void Board::createBoard(int screenwidth)
 {
 
     int radius = screenwidth / (2 * requiredWidth);
+
+    // Hacky way to reduce size of radius on smaller boards
+    if (boardSize <= 7)
+    {
+        radius = radius * 0.8;
+    }
 
     for (int i = 0; i < boardSize; i++)
     {

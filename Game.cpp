@@ -2,6 +2,8 @@
 
 Game::Game(int size)
 {
+    assert(size > 0);
+
     SDL_Handler *handler = new SDL_Handler();
     handler->init();
 
@@ -25,7 +27,7 @@ Game::Game(int size)
 
     // Minimax
     one.createPlayer("human", 1);
-    two.createPlayer("computer", 2, "minimax", size, false, 3);
+    two.createPlayer("computer", 2, "minimax", size, false, 2);
 
     players.first = &one;
     players.second = &two;
