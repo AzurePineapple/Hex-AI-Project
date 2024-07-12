@@ -8,56 +8,24 @@
 #include <ctime>
 #include "src/include/Eigen/Dense"
 
-// int getOneDIndex(int i, int j)
-// {
-//     std::vector<std::pair<int, int>> indexMap = {{0, 0},
-//                                                  {0, 1},
-//                                                  {1, 0},
-//                                                  {1, 1}};
-//     std::pair<int, int> searchPair = {i, j};
-//     auto iterator = std::find(indexMap.begin(), indexMap.end(), searchPair);
-//     if (iterator != indexMap.end())
-//     {
-//         int index = iterator - indexMap.begin();
-//         return index;
-//     }
-//     else
-//     {
-//         return -1;
-//     }
-// }
-
 int main(int argv, char **args)
 {
     srand(static_cast<unsigned int>(time(0)));
 
-    // For testing Evaluation function
+    // // For testing Evaluation function
     // std::vector<std::vector<int>> boardMatrix;
-    // boardMatrix.resize(11, std::vector<int>(11, 0));
+    // boardMatrix.resize(3, std::vector<int>(3, 0));
 
     // int boardSize = boardMatrix.size();
     // // boardMatrix[1][1] = 1;
     // ResistanceDistance *test = new ResistanceDistance();
 
-    // boardMatrix[0][0] = 1;
-    // float boardScore = test->evaluate(boardMatrix);
-    // std::cout << boardScore << std::endl;
+    // boardMatrix[0][1] = 1;
+    // boardMatrix[1][2] = 1;
+    // boardMatrix[2][0] = 2;
 
-    // boardMatrix[0][1] = 2;
-    // boardScore = test->evaluate(boardMatrix, 0, 1);
-    // std::cout << boardScore << std::endl;
-
-    // boardMatrix[1][0] = 2;
-    // boardScore = test->evaluate(boardMatrix, 1, 0);
-    // std::cout << boardScore << std::endl;
-
-    // boardMatrix[1][1] = 2;
-    // boardScore = test->evaluate(boardMatrix, 1, 1);
-    // std::cout << boardScore << std::endl;
-
-    // boardMatrix[1][2] = 2;
-    // boardScore = test->evaluate(boardMatrix, 1, 2);
-    // std::cout << boardScore << std::endl;
+    // auto score = test->evaluate(boardMatrix);
+    // std::cout << score << std::endl;
 
     // For testing MiniMax
 

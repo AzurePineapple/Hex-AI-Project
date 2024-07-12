@@ -35,6 +35,9 @@ private:
     // Vector to contain neighbouring cells for a given i,j
     std::vector<std::pair<int, int>> neighbours;
 
+    // Vector to contain bridge neighbours for a given i,j
+    std::vector<std::pair<int, int>> bridgeNeighbours;
+
     // Vector for storing 2D indeces
     std::vector<std::pair<int, int>> indexMap;
 
@@ -71,4 +74,5 @@ public:
     float getResistanceDistance_board();
     float alternateResistanceDistance();
     MatrixXd pseudoInverse(const MatrixXd &M);
+    bool validateTile(std::pair<int, int> cell, int boardSize);
 };

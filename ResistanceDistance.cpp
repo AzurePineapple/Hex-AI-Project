@@ -147,9 +147,6 @@ void ResistanceDistance::createAdjMatOld(std::vector<std::vector<int>> boardMatr
                 neighbours.push_back(std::make_pair(i + 1, j - 1));
                 neighbours.push_back(std::make_pair(i + 1, j));
 
-                // TODO: Add virtual connection neighbours, give them equal weighting? Or lesser? EXPLORE
-                //          [(-2,1),(-1,2),(1,1),(2,-1),(1,-2),(-1,-1)]
-
                 // Iterate through neighbours of the cell
                 for (auto &&neiPair : neighbours)
                 {
@@ -339,6 +336,7 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
 {
     int boardSize = boardMatrix.size();
 
+    // Player one
     AdjMat.resize(int(pow(boardSize, 2)) + 2, int(pow(boardSize, 2)) + 2);
     AdjMat.setZero();
 
@@ -356,9 +354,6 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
                 neighbours.push_back(std::make_pair(i, j + 1));
                 neighbours.push_back(std::make_pair(i + 1, j - 1));
                 neighbours.push_back(std::make_pair(i + 1, j));
-
-                // TODO: Add virtual connection neighbours, give them equal weighting? Or lesser? EXPLORE
-                //          [(-2,1),(-1,2),(1,1),(2,-1),(1,-2),(-1,-1)]
 
                 // Iterate through neighbours of the cell
                 for (auto &&neiPair : neighbours)
@@ -398,6 +393,48 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
 
                         AdjMat(getOneDIndex(neiPair.first, neiPair.second) + 1, getOneDIndex(i, j) + 1) = AdjValue;
                         AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(neiPair.first, neiPair.second) + 1) = AdjValue;
+                    }
+                }
+
+                // Add to the bridge neighbours vector if required neighbours that make up the bridge are empty
+                bridgeNeighbours.clear();
+                // Checks if tiles are valid first, && is a short circuit operator, the second term isn't evaluated if the first is false
+                if (validateTile({i + 1, j - 1}, boardSize) && validateTile({i + 1, j}, boardSize) && boardMatrix[i + 1][j - 1] == 0 && boardMatrix[i + 1][j] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 2, j - 1});
+                }
+                if (validateTile({i + 1, j}, boardSize) && validateTile({i, j + 1}, boardSize) && boardMatrix[i + 1][j] == 0 && boardMatrix[i][j + 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 1, j + 1});
+                }
+                if (validateTile({i, j + 1}, boardSize) && validateTile({i - 1, j + 1}, boardSize) && boardMatrix[i][j + 1] == 0 && boardMatrix[i - 1][j + 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 1, j + 2});
+                }
+                if (validateTile({i - 1, j + 1}, boardSize) && validateTile({i - 1, j}, boardSize) && boardMatrix[i - 1][j + 1] == 0 && boardMatrix[i - 1][j] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 2, j + 1});
+                }
+                if (validateTile({i - 1, j}, boardSize) && validateTile({i, j - 1}, boardSize) && boardMatrix[i - 1][j] == 0 && boardMatrix[i][j - 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 1, j - 1});
+                }
+                if (validateTile({i, j - 1}, boardSize) && validateTile({i + 1, j - 1}, boardSize) && boardMatrix[i][j - 1] == 0 && boardMatrix[i + 1][j - 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 1, j - 2});
+                }
+
+                for (auto &&bridge : bridgeNeighbours)
+                {
+                    // Only perform actions on valid cells
+                    if (0 <= bridge.first && bridge.first < boardSize && 0 <= bridge.second && bridge.second < boardSize)
+                    {
+                        // Check if both the cell and the bridge cell have a friendly tile in them
+                        if (boardMatrix[i][j] == 1 && boardMatrix[bridge.first][bridge.second] == 1)
+                        {
+                            AdjMat(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2; // TODO: think about this value
+                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2;
+                        }
                     }
                 }
             }
@@ -467,9 +504,6 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
                 neighbours.push_back(std::make_pair(i + 1, j - 1));
                 neighbours.push_back(std::make_pair(i + 1, j));
 
-                // TODO: Add virtual connection neighbours, give them equal weighting? Or lesser? EXPLORE
-                //          [(-2,1),(-1,2),(1,1),(2,-1),(1,-2),(-1,-1)]
-
                 // Iterate through neighbours of the cell
                 for (auto &&neiPair : neighbours)
                 {
@@ -508,6 +542,47 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
 
                         AdjMat_two(getOneDIndex(neiPair.first, neiPair.second) + 1, getOneDIndex(i, j) + 1) = AdjValue;
                         AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(neiPair.first, neiPair.second) + 1) = AdjValue;
+                    }
+                }
+
+                // Add to the bridge neighbours vector if required neighbours that make up the bridge are empty
+                bridgeNeighbours.clear();
+                if (validateTile({i + 1, j - 1}, boardSize) && validateTile({i + 1, j}, boardSize) && boardMatrix[i + 1][j - 1] == 0 && boardMatrix[i + 1][j] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 2, j - 1});
+                }
+                if (validateTile({i + 1, j}, boardSize) && validateTile({i, j + 1}, boardSize) && boardMatrix[i + 1][j] == 0 && boardMatrix[i][j + 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 1, j + 1});
+                }
+                if (validateTile({i, j + 1}, boardSize) && validateTile({i - 1, j + 1}, boardSize) && boardMatrix[i][j + 1] == 0 && boardMatrix[i - 1][j + 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 1, j + 2});
+                }
+                if (validateTile({i - 1, j + 1}, boardSize) && validateTile({i - 1, j}, boardSize) && boardMatrix[i - 1][j + 1] == 0 && boardMatrix[i - 1][j] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 2, j + 1});
+                }
+                if (validateTile({i - 1, j}, boardSize) && validateTile({i, j - 1}, boardSize) && boardMatrix[i - 1][j] == 0 && boardMatrix[i][j - 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i - 1, j - 1});
+                }
+                if (validateTile({i, j - 1}, boardSize) && validateTile({i + 1, j - 1}, boardSize) && boardMatrix[i][j - 1] == 0 && boardMatrix[i + 1][j - 1] == 0)
+                {
+                    bridgeNeighbours.push_back({i + 1, j - 2});
+                }
+
+                for (auto &&bridge : bridgeNeighbours)
+                {
+                    // Only perform actions on valid cells
+                    if (0 <= bridge.first && bridge.first < boardSize && 0 <= bridge.second && bridge.second < boardSize)
+                    {
+                        // Check if both the cell and the bridge cell have a friendly tile in them
+                        if (boardMatrix[i][j] == 2 && boardMatrix[bridge.first][bridge.second] == 2)
+                        {
+                            AdjMat_two(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2; // TODO: think about this value
+                            AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2;
+                        }
                     }
                 }
             }
@@ -1170,9 +1245,6 @@ void ResistanceDistance::updateLaplacian(std::vector<std::vector<int>> boardMatr
                 }
             }
         }
-        // FIXME: can I only modify the relevant diagonal entries? Might save fractional microseconds
-        // FIXME: can also use LaplacianMatrix.rowwise().sum() to get a vector of the row sums, that operation seems to take 1microS less
-        //      than the for loop that does the whole thing
 
         // Set main diagonal to be negative of row sum
 
@@ -1442,6 +1514,11 @@ MatrixXd ResistanceDistance::pseudoInverse(const MatrixXd &M)
     MatrixXd S_inv = singularValues_inv.asDiagonal();
 
     return svd.matrixV() * S_inv * svd.matrixU().transpose();
+}
+
+bool ResistanceDistance::validateTile(std::pair<int, int> cell, int boardSize)
+{
+    return (0 <= cell.first && cell.first < boardSize && 0 <= cell.second && cell.second < boardSize);
 }
 
 void ResistanceDistance::printChild(std::vector<std::vector<int>> board)

@@ -246,8 +246,8 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             int noEvaluations = 0;
             // Get the evaluation function of the move
             float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second, &noEvaluations);
-            std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
-            std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
+            // std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
+            // std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move
             boardMatrix[move.first][move.second] = 0;
 
@@ -275,13 +275,13 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
     }
 
     // Print the best calculated board scores
-    for (size_t i = 0; i < boardScores.size(); i++)
-    {
-        for (size_t j = 0; j < boardScores.size(); j++)
-        {
-            std::cout << "Board Score at " << i << ", " << j << " is " << boardScores[i][j] << std::endl;
-        }
-    }
+    // for (size_t i = 0; i < boardScores.size(); i++)
+    // {
+    //     for (size_t j = 0; j < boardScores.size(); j++)
+    //     {
+    //         std::cout << "Board Score at " << i << ", " << j << " is " << boardScores[i][j] << std::endl;
+    //     }
+    // }
 
     return bestMove;
 }
