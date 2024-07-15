@@ -1,11 +1,10 @@
 #include "Game.h"
 
-Game::Game(int size)
+Game::Game(int size, SDL_Handler* handler)
 {
     assert(size > 0);
 
-    SDL_Handler *handler = new SDL_Handler();
-    handler->init();
+    
 
     Board *gameBoard = new Board(size, 2);
 

@@ -1,4 +1,5 @@
 #include "src/include/SDL2/SDL.h"
+#include "SDL_syswm.h"
 // #include "SDL.h"
 
 class SDL_Handler
@@ -9,7 +10,7 @@ public:
     ~SDL_Handler();
 
     const int SCREEN_WIDTH = 1280;
-    const int SCREEN_HEIGHT = 720;
+    const int SCREEN_HEIGHT = 740;
 
     SDL_Window *Window;
 

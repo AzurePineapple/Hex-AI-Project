@@ -5,7 +5,6 @@
 #include <set>
 #include <iostream>
 #include <windows.h>
-// #include "ResistanceDistance.cpp"
 
 class Game
 {
@@ -338,7 +337,7 @@ private:
     };
 
 public:
-    Game(int size);
+    Game(int size, SDL_Handler *handler);
     ~Game();
 
     // Swap the players after they take their turns
