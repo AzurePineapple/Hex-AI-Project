@@ -49,17 +49,41 @@ HMENU CreateMainMenu()
     // Add the the menu bar
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)playerTwoOptions, "Player 2 Settings");
 
-    // Create pop up menu for minimax options
+    // Create pop up menu for minimax options and the sub menu for depth selection
     HMENU minimaxOptions = CreatePopupMenu();
     HMENU depthMenu = CreatePopupMenu();
+
     // Create the options
     AppendMenu(depthMenu, MF_STRING, 1014, "1");
     AppendMenu(depthMenu, MF_STRING, 1015, "2");
     AppendMenu(depthMenu, MF_STRING, 1016, "3");
 
+    // Add the sub menu to the menu and add the menu to the main menu
     AppendMenu(minimaxOptions, MF_STRING | MF_POPUP, (UINT_PTR)depthMenu, "Search Depth");
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)minimaxOptions, "MiniMax Options");
 
+    // Create MCTS options
+    HMENU mctsOptions = CreatePopupMenu();
+    HMENU timeLimitMenu = CreatePopupMenu();
+    HMENU iterationLimitMenu = CreatePopupMenu();
+
+    // Add time limit options
+    AppendMenu(timeLimitMenu, MF_STRING, 1017, "3 Sec");
+    AppendMenu(timeLimitMenu, MF_STRING, 1018, "5 Sec");
+    AppendMenu(timeLimitMenu, MF_STRING, 1019, "10 Sec");
+    AppendMenu(timeLimitMenu, MF_STRING, 1020, "30 Sec");
+
+    // Add iteration limit options
+    AppendMenu(iterationLimitMenu, MF_STRING, 1021, "1000");
+    AppendMenu(iterationLimitMenu, MF_STRING, 1022, "10000");
+    AppendMenu(iterationLimitMenu, MF_STRING, 1023, "100000");
+
+    // Add options to menus
+    AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)timeLimitMenu, "Time Limit");
+    AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)iterationLimitMenu, "Iteration Limit");
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)mctsOptions, "MCTS Options");
+
+    
     return hMenu;
 }
 
