@@ -111,7 +111,6 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
         auto it = scoresMap.find(boardMatrix);
         if (it != scoresMap.end())
         {
-            std::cout << "Retrieved cached score!" << std::endl;
             return it->second;
         }
         else

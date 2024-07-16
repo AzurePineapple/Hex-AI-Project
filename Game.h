@@ -1,6 +1,7 @@
 #include "Board.cpp"
 #include "Player.cpp"
 #include "SDL_Handler.cpp"
+#include "MenuState.h"
 #include <vector>
 #include <set>
 #include <iostream>
@@ -337,9 +338,11 @@ private:
     };
 
 public:
-    Game(int size, SDL_Handler *handler);
+    Game(MenuState options, SDL_Handler *handler);
     ~Game();
 
     // Swap the players after they take their turns
     void swapActivePlayer();
+
+    void processOptions(MenuState options, int &size, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mctsTimeLimit, int &mctsIterLimit);
 };

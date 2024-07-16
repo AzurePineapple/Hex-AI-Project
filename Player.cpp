@@ -4,7 +4,7 @@ Player::Player()
 {
 }
 
-void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3)
+void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, int mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000)
 {
     if (playerType == "human")
     {
@@ -17,12 +17,14 @@ void Player::createPlayer(std::string playerType, int colourCode, std::string AI
         AIModel = AIType;
         isParallelised = isParallelisedParam;
         minimaxSearchDepth = searchDepthParam;
+        mctsTimeLimit = mctsTimeLimitParam;
+        mctsIterLimit = mctsIterLimitParam;
         if (AIModel == "minimax")
         {
             minimaxEngine = MiniMax();
             // MiniMax *test = new MiniMax();
         }
-        else if (AIModel == "MCTS")
+        else if (AIModel == "mcts")
         {
             if (size != -1)
             {

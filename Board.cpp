@@ -46,6 +46,8 @@ Board::Board(int size, int ColourPairChoice)
     requiredWidth = boardSize + floor(boardSize / 2);
     boardMatrix.resize(boardSize, std::vector<int>(boardSize, 0));
 
+    // TODO: add offsets for 6, 8, 10
+
     // Insert position offsets into map
     offsets.insert({3, {198, 40}});
     offsets.insert({5, {203, 72}});

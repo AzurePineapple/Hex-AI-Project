@@ -1,32 +1,67 @@
 #include "Game.h"
 
-Game::Game(int size, SDL_Handler* handler)
+Game::Game(MenuState options, SDL_Handler *handler)
 {
+    // Process incoming game options
+
+    int size;
+    std::string playerOneType;
+    std::string playerTwoType;
+    int minimaxDepth;
+    int mctsTimeLimit;
+    int mctsIterLimit;
+
+    processOptions(options, size, playerOneType, playerTwoType, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+
     assert(size > 0);
 
-    
-
     Board *gameBoard = new Board(size, 2);
+
+    if (playerOneType == "human")
+    {
+        one.createPlayer("human", 1);
+    }
+    else if (playerOneType == "minimax")
+    {
+        one.createPlayer("computer", 1, "minimax", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+    }
+    else if (playerOneType == "mcts")
+    {
+        one.createPlayer("computer", 1, "mcts", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+    }
+
+    if (playerTwoType == "human")
+    {
+        two.createPlayer("human", 2);
+    }
+    else if (playerTwoType == "minimax")
+    {
+        two.createPlayer("computer", 2, "minimax", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+    }
+    else if (playerTwoType == "mcts")
+    {
+        two.createPlayer("computer", 2, "mcts", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+    }
 
     // MCTS
 
     // Opponent (player or test) First
     // one.createPlayer("human", 1);
-    // two.createPlayer("computer", 2, "MCTS", size, true);
+    // two.createPlayer("computer", 2, "mcts", size, true);
     // AI First
-    // one.createPlayer("computer", 1, "MCTS", size, true);
+    // one.createPlayer("computer", 1, "mcts", size, true);
     // two.createPlayer("human", 2);
 
     // // Self play testing - noPP first
-    // // one.createPlayer("computer", 1, "MCTS", size, false);
-    // // two.createPlayer("computer", 2, "MCTS", size, true);
+    // // one.createPlayer("computer", 1, "mcts", size, false);
+    // // two.createPlayer("computer", 2, "mcts", size, true);
     // // Self play testing - PP first
-    // one.createPlayer("computer", 1, "MCTS", size, true);
-    // two.createPlayer("computer", 2, "MCTS", size, false);
+    // one.createPlayer("computer", 1, "mcts", size, true);
+    // two.createPlayer("computer", 2, "mcts", size, false);
 
     // Minimax
-    one.createPlayer("human", 1);
-    two.createPlayer("computer", 2, "minimax", size, false, 2);
+    // one.createPlayer("human", 1);
+    // two.createPlayer("computer", 2, "minimax", size, false, 2);
 
     players.first = &one;
     players.second = &two;
@@ -380,5 +415,114 @@ void Game::swapActivePlayer()
     else
     {
         activePlayer = players.first;
+    }
+}
+
+void Game::processOptions(MenuState options, int &size, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mctsTimeLimit, int &mctsIterLimit)
+{
+    switch (options.selectedBoardSize)
+    {
+    case 1001:
+        size = 5;
+        break;
+    case 1002:
+        size = 6;
+        break;
+    case 1003:
+        size = 7;
+        break;
+    case 1004:
+        size = 8;
+        break;
+    case 1005:
+        size = 9;
+        break;
+    case 1006:
+        size = 10;
+        break;
+    case 1007:
+        size = 11;
+        break;
+    default:
+        throw new std::logic_error("Invalid board size enum");
+        break;
+    }
+    switch (options.selectedPlayerOneOption)
+    {
+    case 1008:
+        playerOneType = "human";
+        break;
+    case 1009:
+        playerOneType = "minimax";
+        break;
+    case 1010:
+        playerOneType = "mcts";
+        break;
+    default:
+        throw new std::logic_error("Invalid player one enum");
+        break;
+    }
+    switch (options.selectedPlayerTwoOption)
+    {
+    case 1011:
+        playerTwoType = "human";
+        break;
+    case 1012:
+        playerTwoType = "minimax";
+        break;
+    case 1013:
+        playerTwoType = "mcts";
+        break;
+    default:
+        throw new std::logic_error("Invalid player two enum");
+        break;
+    }
+    switch (options.selectedMinimaxDepth)
+    {
+    case 1014:
+        minimaxDepth = 1;
+        break;
+    case 1015:
+        minimaxDepth = 2;
+        break;
+    case 1016:
+        minimaxDepth = 3;
+        break;
+    default:
+        throw new std::logic_error("Invalid minimax depth enum");
+        break;
+    }
+    switch (options.selectedMCTSTimeLimit)
+    {
+    case 1017:
+        mctsTimeLimit = 3;
+        break;
+    case 1018:
+        mctsTimeLimit = 5;
+        break;
+    case 1019:
+        mctsTimeLimit = 10;
+        break;
+    case 1020:
+        mctsTimeLimit = 30;
+        break;
+    default:
+        throw new std::logic_error("Invalid mcts time enum");
+        break;
+    }
+    switch (options.selectedMCTSIterationLimit)
+    {
+    case 1021:
+        mctsIterLimit = 1000;
+        break;
+    case 1022:
+        mctsIterLimit = 10000;
+        break;
+    case 1023:
+        mctsIterLimit = 100000;
+        break;
+    default:
+        throw new std::logic_error("Invalid mcts iter enum");
+        break;
     }
 }
