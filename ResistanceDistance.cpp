@@ -1491,6 +1491,7 @@ float ResistanceDistance::alternateResistanceDistance()
     float boardScore = log(r_ij / r2_ij);
     return boardScore;
 }
+
 MatrixXd ResistanceDistance::pseudoInverse(const MatrixXd &M)
 {
     Eigen::JacobiSVD<MatrixXd> svd(M, Eigen::ComputeThinU | Eigen::ComputeThinV);

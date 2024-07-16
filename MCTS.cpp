@@ -514,7 +514,7 @@ std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, d
     if (isParallelised)
     {
         numberOfThreads = std::thread::hardware_concurrency();
-        std::cout << "Number of threads used: " << numberOfThreads << std::endl;
+        // std::cout << "Number of threads used: " << numberOfThreads << std::endl;
     }
 
     // TODO: look into setting iteration limit as root.visits?

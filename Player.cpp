@@ -118,7 +118,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
         *x = minimax_pair.first;
         *y = minimax_pair.second;
     }
-    else if (AIModel == "MCTS")
+    else if (AIModel == "mcts")
     {
         // First step, update the root based on the opponent's move
 

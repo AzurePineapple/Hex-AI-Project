@@ -28,7 +28,7 @@ void ToggleMenuItem(HMENU hMenu, int itemID, int &currentSelectedID)
     }
 }
 
-HMENU CreateMainMenu()
+HMENU CreateMainMenu(MenuState options)
 {
     HMENU hMenu = CreateMenu();
 
@@ -43,7 +43,7 @@ HMENU CreateMainMenu()
     AppendMenu(boardSizeMenu, MF_STRING, BOARD_SIZE_11x11, "11x11");
 
     // Select the default value
-    // CheckMenuItem(boardSizeMenu, options.selectedBoardSize, MF_CHECKED);
+    CheckMenuItem(boardSizeMenu, options.selectedBoardSize, MF_CHECKED);
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)boardSizeMenu, "Board Size");
 
@@ -54,7 +54,7 @@ HMENU CreateMainMenu()
     AppendMenu(playerOneOptions, MF_STRING, PLAYER_ONE_MCTS, "MCTS");
 
     // Select the default value
-    // CheckMenuItem(playerOneOptions, options.selectedPlayerOneOption, MF_CHECKED);
+    CheckMenuItem(playerOneOptions, options.selectedPlayerOneOption, MF_CHECKED);
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)playerOneOptions, "Player 1 Settings");
 
@@ -65,7 +65,7 @@ HMENU CreateMainMenu()
     AppendMenu(playerTwoOptions, MF_STRING, PLAYER_TWO_MCTS, "MCTS");
 
     // Select the default value
-    // CheckMenuItem(playerTwoOptions, options.selectedPlayerTwoOption, MF_CHECKED);
+    CheckMenuItem(playerTwoOptions, options.selectedPlayerTwoOption, MF_CHECKED);
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)playerTwoOptions, "Player 2 Settings");
 
@@ -77,7 +77,7 @@ HMENU CreateMainMenu()
     AppendMenu(depthMenu, MF_STRING, MINIMAX_DEPTH_3, "3");
 
     // Select the default value
-    // CheckMenuItem(depthMenu, options.selectedMinimaxDepth, MF_CHECKED);
+    CheckMenuItem(depthMenu, options.selectedMinimaxDepth, MF_CHECKED);
     // Add the sub sub menu to the sub menu
     AppendMenu(minimaxOptions, MF_STRING | MF_POPUP, (UINT_PTR)depthMenu, "Search Depth");
     // Add the sub menu to the main menu
@@ -93,14 +93,14 @@ HMENU CreateMainMenu()
     AppendMenu(timeLimitMenu, MF_STRING, MCTS_TIME_30_SEC, "30 Sec");
 
     // Select the default value
-    // CheckMenuItem(timeLimitMenu, options.selectedMCTSTimeLimit, MF_CHECKED);
+    CheckMenuItem(timeLimitMenu, options.selectedMCTSTimeLimit, MF_CHECKED);
 
     AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_1000, "1000");
     AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_10000, "10000");
     AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_100000, "100000");
 
     // Select the default value
-    // CheckMenuItem(iterationLimitMenu, options.selectedMCTSIterationLimit, MF_CHECKED);
+    CheckMenuItem(iterationLimitMenu, options.selectedMCTSIterationLimit, MF_CHECKED);
     // Add the sub sub menu to the sub menu
     AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)timeLimitMenu, "Time Limit");
     // Add the sub sub menu to the sub menu
@@ -116,7 +116,6 @@ HMENU CreateMainMenu()
 
 void StartGame(SDL_Handler *handler, MenuState options)
 {
-    std::cout << "Start Game pressed" << std::endl;
     Game *newGame = new Game(options, handler);
 }
 
@@ -186,25 +185,25 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     }
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    static MenuState options;
-    switch (message)
-    {
-    case WM_COMMAND:
-    {
-        SDL_Handler *handler = reinterpret_cast<SDL_Handler *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-        ProcessMenuSelection(hwnd, wParam, handler, options);
-    }
-    break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hwnd, message, wParam, lParam);
-    }
-    return 0;
-}
+// LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+// {
+//     static MenuState options;
+//     switch (message)
+//     {
+//     case WM_COMMAND:
+//     {
+//         SDL_Handler *handler = reinterpret_cast<SDL_Handler *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+//         ProcessMenuSelection(hwnd, wParam, handler, options);
+//     }
+//     break;
+//     case WM_DESTROY:
+//         PostQuitMessage(0);
+//         break;
+//     default:
+//         return DefWindowProc(hwnd, message, wParam, lParam);
+//     }
+//     return 0;
+// }
 
 int main(int argv, char **args)
 {
@@ -256,7 +255,7 @@ int main(int argv, char **args)
     HWND hwnd = wmInfo.info.win.window;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(handler));
 
-    HMENU hmenu = CreateMainMenu();
+    HMENU hmenu = CreateMainMenu(options);
     SetMenu(hwnd, hmenu);
 
     // Main message loop
