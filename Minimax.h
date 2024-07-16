@@ -32,11 +32,11 @@ public:
 
     // std::pair<float, std::vector<std::vector<int>>> doTheThing(std::vector<std::vector<int>> boardMatrix, int depth, float alpha, float beta, bool maximisingPlayer);
 
-    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y, int *noRecursions);
+    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y, int *noRecursions, time_t start_time, double time_limit);
 
-    std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth);
+    std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
 
-    std::pair<int, int> go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth);
+    std::pair<int, int> go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
 
     std::vector<std::pair<int, int>> generateMoves(const std::vector<std::vector<int>> &boardMatrix);
 

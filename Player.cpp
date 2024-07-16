@@ -114,7 +114,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             blacksTurn = false;
         }
 
-        auto minimax_pair = minimaxEngine.go(boardMatrix, blacksTurn, minimaxSearchDepth);
+        auto minimax_pair = minimaxEngine.go(boardMatrix, blacksTurn, minimaxSearchDepth, 10.0);
         *x = minimax_pair.first;
         *y = minimax_pair.second;
     }
