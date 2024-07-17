@@ -43,4 +43,25 @@ struct MenuState
     int selectedMCTSIterationLimit = MCTS_ITER_10000; // Default to 1000 iterations
 };
 
+// Toggles menu items to grey and back when not in use
+void setMenuState(HWND hwnd, HMENU hMenu, UINT itemPos, bool enabled)
+{
+    // Set the windows api flags based on input
+    UINT state = enabled ? MF_ENABLED : (MF_DISABLED | MF_GRAYED);
+    EnableMenuItem(hMenu, itemPos, MF_BYPOSITION | state);
+    // Redraw the menu
+    DrawMenuBar(hwnd);
+}
+
+void enableAllMenus(HWND hwnd, HMENU hMenu)
+{
+    int noItems = GetMenuItemCount(hMenu);
+    for (int i = 0; i < noItems; i++)
+    {
+        EnableMenuItem(hMenu, i, MF_BYPOSITION | MF_ENABLED);
+    }
+    // Redraw the menu
+    DrawMenuBar(hwnd);
+}
+
 #endif

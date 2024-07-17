@@ -338,7 +338,7 @@ private:
     };
 
 public:
-    Game(MenuState options, SDL_Handler *handler);
+    Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd);
     ~Game();
 
     // Swap the players after they take their turns

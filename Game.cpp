@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(MenuState options, SDL_Handler *handler)
+Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 {
     // Process incoming game options
 
@@ -73,6 +73,7 @@ Game::Game(MenuState options, SDL_Handler *handler)
 
     bool quit = false;
     bool gameOver = false;
+    bool swapEnabled = false;
     int turnCounter = 0;
     SDL_Event event;
 
@@ -89,6 +90,18 @@ Game::Game(MenuState options, SDL_Handler *handler)
             if (turnCounter != 0 && previousMove.first == -1 && previousMove.second == -1)
             {
                 throw std::logic_error("Previous move logic has fucked up");
+            }
+
+            // Enable swap button on turn 1, disable after
+            if (turnCounter == 1 && !swapEnabled)
+            {
+                setMenuState(hwnd, hMenu, 5, true);
+                swapEnabled = true;
+            }
+            if (turnCounter == 2 && swapEnabled)
+            {
+                setMenuState(hwnd, hMenu, 5, false);
+                swapEnabled = false;
             }
 
             if (!activePlayer->getIsComputer())
@@ -391,7 +404,11 @@ Game::Game(MenuState options, SDL_Handler *handler)
             // Close the window if the game is over
             if (gameOver)
             {
+                // Reenable options menu's so new game can be started
+                enableAllMenus(hwnd, hMenu);
+                // Render the gameboard to the console
                 gameBoard->showBoard();
+                // Render the board to the screen
                 SDL_RenderPresent(handler->Renderer);
                 std::cout << "Closing window in 2 seconds!" << std::endl;
                 Sleep(2000);

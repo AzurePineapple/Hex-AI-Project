@@ -28,14 +28,6 @@ void ToggleMenuItem(HMENU hMenu, int itemID, int &currentSelectedID)
     }
 }
 
-// Toggles menu items to grey and back when not in use
-void setMenuState(HMENU hMenu, UINT itemPos, bool enabled)
-{
-    // Set the windows api flags based on input
-    UINT state = enabled ? MF_ENABLED : (MF_DISABLED | MF_GRAYED);
-    EnableMenuItem(hMenu, itemPos, MF_BYPOSITION | state);
-}
-
 // Create the menu objects
 HMENU CreateMainMenu(MenuState options)
 {
@@ -125,17 +117,18 @@ HMENU CreateMainMenu(MenuState options)
     return hMenu;
 }
 
-void StartGame(SDL_Handler *handler, MenuState options, HMENU hMenu)
+void StartGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd)
 {
     // Turn settings menu's off when game is started
-    setMenuState(hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
-    setMenuState(hMenu, 1, false);
-    setMenuState(hMenu, 2, false);
-    setMenuState(hMenu, 3, false);
-    setMenuState(hMenu, 4, false);
+    setMenuState(hwnd, hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
+    setMenuState(hwnd, hMenu, 1, false); // playerOneOptions
+    setMenuState(hwnd, hMenu, 2, false); // playerTwoOptions
+    setMenuState(hwnd, hMenu, 3, false); // minimaxOptions
+    setMenuState(hwnd, hMenu, 4, false); // mctsOptions
+    setMenuState(hwnd, hMenu, 5, false); // swapbutton (reenabled at beginning of game cycle)
 
     // Create the game object
-    Game *newGame = new Game(options, handler);
+    Game *newGame = new Game(options, handler, hMenu, hwnd);
 }
 
 void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuState &options)
@@ -199,7 +192,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
         ToggleMenuItem(iterationLimitMenu, wmId, options.selectedMCTSIterationLimit);
         break;
     case START_GAME:
-        StartGame(handler, options, hMenu);
+        StartGame(handler, options, hMenu, hwnd);
         break;
     }
 }
