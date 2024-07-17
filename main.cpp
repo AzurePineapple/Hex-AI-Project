@@ -73,14 +73,24 @@ HMENU CreateMainMenu(MenuState options)
     // Create pop-up menu for Minimax options and the sub-menu for depth selection
     HMENU minimaxOptions = CreatePopupMenu();
     HMENU depthMenu = CreatePopupMenu();
+    HMENU mmTimeLimitMenu = CreatePopupMenu();
     AppendMenu(depthMenu, MF_STRING, MINIMAX_DEPTH_1, "1");
     AppendMenu(depthMenu, MF_STRING, MINIMAX_DEPTH_2, "2");
     AppendMenu(depthMenu, MF_STRING, MINIMAX_DEPTH_3, "3");
 
     // Select the default value
     CheckMenuItem(depthMenu, options.selectedMinimaxDepth, MF_CHECKED);
+
+    AppendMenu(mmTimeLimitMenu, MF_STRING, MM_TIME_3_SEC, "3 Sec");
+    AppendMenu(mmTimeLimitMenu, MF_STRING, MM_TIME_5_SEC, "5 Sec");
+    AppendMenu(mmTimeLimitMenu, MF_STRING, MM_TIME_10_SEC, "10 Sec");
+    AppendMenu(mmTimeLimitMenu, MF_STRING, MM_TIME_30_SEC, "30 Sec");
+
+    CheckMenuItem(mmTimeLimitMenu, options.selectedMinimaxTimeLimit, MF_CHECKED);
+
     // Add the sub sub menu to the sub menu
     AppendMenu(minimaxOptions, MF_STRING | MF_POPUP, (UINT_PTR)depthMenu, "Search Depth");
+    AppendMenu(minimaxOptions, MF_STRING | MF_POPUP, (UINT_PTR)mmTimeLimitMenu, "Time Limit");
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)minimaxOptions, "MiniMax Options");
 
@@ -141,6 +151,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     HMENU playerTwoOptions = GetSubMenu(hMenu, 2);
     HMENU minimaxOptions = GetSubMenu(hMenu, 3);
     HMENU depthMenu = GetSubMenu(minimaxOptions, 0);
+    HMENU mmTimeLimitMenu = GetSubMenu(minimaxOptions, 1);
     HMENU mctsOptions = GetSubMenu(hMenu, 4);
     HMENU timeLimitMenu = GetSubMenu(mctsOptions, 0);
     HMENU iterationLimitMenu = GetSubMenu(mctsOptions, 1);
@@ -193,6 +204,12 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
         break;
     case START_GAME:
         StartGame(handler, options, hMenu, hwnd);
+        break;
+    case MM_TIME_3_SEC:
+    case MM_TIME_5_SEC:
+    case MM_TIME_10_SEC:
+    case MM_TIME_30_SEC:
+        ToggleMenuItem(mmTimeLimitMenu, wmId, options.selectedMinimaxTimeLimit);
         break;
     }
 }

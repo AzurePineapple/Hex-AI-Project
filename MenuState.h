@@ -29,7 +29,11 @@ enum MenuIDS
     MCTS_ITER_10000,
     MCTS_ITER_100000,
     START_GAME,
-    SWAP_MOVE
+    SWAP_MOVE,
+    MM_TIME_3_SEC,
+    MM_TIME_5_SEC,
+    MM_TIME_10_SEC,
+    MM_TIME_30_SEC
 };
 
 // Structure to hold menu state values
@@ -37,10 +41,11 @@ struct MenuState
 {
     int selectedBoardSize = BOARD_SIZE_7x7;           // Default to 7x7
     int selectedPlayerOneOption = PLAYER_ONE_HUMAN;   // Default to Human
-    int selectedPlayerTwoOption = PLAYER_TWO_MINIMAX; // Default to Human
-    int selectedMinimaxDepth = MINIMAX_DEPTH_2;       // Default to depth 1
-    int selectedMCTSTimeLimit = MCTS_TIME_10_SEC;     // Default to 3 seconds
-    int selectedMCTSIterationLimit = MCTS_ITER_10000; // Default to 1000 iterations
+    int selectedPlayerTwoOption = PLAYER_TWO_MINIMAX; // Default to Minimax
+    int selectedMinimaxDepth = MINIMAX_DEPTH_2;       // Default to depth 2
+    int selectedMinimaxTimeLimit = MM_TIME_10_SEC;       // Default to 10 seconds
+    int selectedMCTSTimeLimit = MCTS_TIME_10_SEC;     // Default to 10 seconds
+    int selectedMCTSIterationLimit = MCTS_ITER_10000; // Default to 10000 iterations
 };
 
 // Toggles menu items to grey and back when not in use

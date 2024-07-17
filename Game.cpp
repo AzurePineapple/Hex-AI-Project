@@ -8,10 +8,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     std::string playerOneType;
     std::string playerTwoType;
     int minimaxDepth;
+    int mmTimeLimit;
     int mctsTimeLimit;
     int mctsIterLimit;
 
-    processOptions(options, size, playerOneType, playerTwoType, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+    processOptions(options, size, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
 
     assert(size > 0);
 
@@ -23,11 +24,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     }
     else if (playerOneType == "minimax")
     {
-        one.createPlayer("computer", 1, "minimax", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+        one.createPlayer("computer", 1, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
     }
     else if (playerOneType == "mcts")
     {
-        one.createPlayer("computer", 1, "mcts", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+        one.createPlayer("computer", 1, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
     }
 
     if (playerTwoType == "human")
@@ -36,11 +37,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     }
     else if (playerTwoType == "minimax")
     {
-        two.createPlayer("computer", 2, "minimax", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+        two.createPlayer("computer", 2, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
     }
     else if (playerTwoType == "mcts")
     {
-        two.createPlayer("computer", 2, "mcts", size, true, minimaxDepth, mctsTimeLimit, mctsIterLimit);
+        two.createPlayer("computer", 2, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
     }
 
     // MCTS
@@ -435,29 +436,29 @@ void Game::swapActivePlayer()
     }
 }
 
-void Game::processOptions(MenuState options, int &size, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mctsTimeLimit, int &mctsIterLimit)
+void Game::processOptions(MenuState options, int &size, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit)
 {
     switch (options.selectedBoardSize)
     {
-    case 1001:
+    case BOARD_SIZE_5x5:
         size = 5;
         break;
-    case 1002:
+    case BOARD_SIZE_6x6:
         size = 6;
         break;
-    case 1003:
+    case BOARD_SIZE_7x7:
         size = 7;
         break;
-    case 1004:
+    case BOARD_SIZE_8x8:
         size = 8;
         break;
-    case 1005:
+    case BOARD_SIZE_9x9:
         size = 9;
         break;
-    case 1006:
+    case BOARD_SIZE_10x10:
         size = 10;
         break;
-    case 1007:
+    case BOARD_SIZE_11x11:
         size = 11;
         break;
     default:
@@ -466,13 +467,13 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
     }
     switch (options.selectedPlayerOneOption)
     {
-    case 1008:
+    case PLAYER_ONE_HUMAN:
         playerOneType = "human";
         break;
-    case 1009:
+    case PLAYER_ONE_MINIMAX:
         playerOneType = "minimax";
         break;
-    case 1010:
+    case PLAYER_ONE_MCTS:
         playerOneType = "mcts";
         break;
     default:
@@ -481,13 +482,13 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
     }
     switch (options.selectedPlayerTwoOption)
     {
-    case 1011:
+    case PLAYER_TWO_HUMAN:
         playerTwoType = "human";
         break;
-    case 1012:
+    case PLAYER_TWO_MINIMAX:
         playerTwoType = "minimax";
         break;
-    case 1013:
+    case PLAYER_TWO_MCTS:
         playerTwoType = "mcts";
         break;
     default:
@@ -496,13 +497,13 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
     }
     switch (options.selectedMinimaxDepth)
     {
-    case 1014:
+    case MINIMAX_DEPTH_1:
         minimaxDepth = 1;
         break;
-    case 1015:
+    case MINIMAX_DEPTH_2:
         minimaxDepth = 2;
         break;
-    case 1016:
+    case MINIMAX_DEPTH_3:
         minimaxDepth = 3;
         break;
     default:
@@ -511,16 +512,16 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
     }
     switch (options.selectedMCTSTimeLimit)
     {
-    case 1017:
+    case MCTS_TIME_3_SEC:
         mctsTimeLimit = 3;
         break;
-    case 1018:
+    case MCTS_TIME_5_SEC:
         mctsTimeLimit = 5;
         break;
-    case 1019:
+    case MCTS_TIME_10_SEC:
         mctsTimeLimit = 10;
         break;
-    case 1020:
+    case MCTS_TIME_30_SEC:
         mctsTimeLimit = 30;
         break;
     default:
@@ -529,17 +530,35 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
     }
     switch (options.selectedMCTSIterationLimit)
     {
-    case 1021:
+    case MCTS_ITER_1000:
         mctsIterLimit = 1000;
         break;
-    case 1022:
+    case MCTS_ITER_10000:
         mctsIterLimit = 10000;
         break;
-    case 1023:
+    case MCTS_ITER_100000:
         mctsIterLimit = 100000;
         break;
     default:
         throw new std::logic_error("Invalid mcts iter enum");
+        break;
+    }
+    switch (options.selectedMinimaxTimeLimit)
+    {
+    case MM_TIME_3_SEC:
+        mmTimeLimit = 3;
+        break;
+    case MM_TIME_5_SEC:
+        mmTimeLimit = 5;
+        break;
+    case MM_TIME_10_SEC:
+        mmTimeLimit = 10;
+        break;
+    case MM_TIME_30_SEC:
+        mmTimeLimit = 30;
+        break;
+    default:
+        throw new std::logic_error("Invalid mmTimeLimit enum");
         break;
     }
 }
