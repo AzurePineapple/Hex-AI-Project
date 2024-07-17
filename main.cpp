@@ -110,6 +110,8 @@ HMENU CreateMainMenu(MenuState options)
 
     // Append a start button
     AppendMenu(hMenu, MF_STRING, START_GAME, "Start Game");
+    // Append the swap button
+    AppendMenu(hMenu, MF_STRING, SWAP_MOVE, "Swap Move");
 
     return hMenu;
 }

@@ -51,8 +51,11 @@ Board::Board(int size, int ColourPairChoice)
     // Insert position offsets into map
     offsets.insert({3, {198, 40}});
     offsets.insert({5, {203, 72}});
+    offsets.insert({6, {228, 93}});
     offsets.insert({7, {88, 10}});
+    offsets.insert({8, {113, 28}});
     offsets.insert({9, {89, 17}});
+    offsets.insert({10, {113, 34}});
     offsets.insert({11, {86, 23}});
     offsets.insert({13, {97, 29}});
 

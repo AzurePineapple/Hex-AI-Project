@@ -146,9 +146,9 @@ Game::Game(MenuState options, SDL_Handler *handler)
                     }
                 }
 
-                if (turnCounter == 1 && event.type == SDL_KEYDOWN)
+                if (turnCounter == 1 && event.type == SDL_SYSWMEVENT)
                 {
-                    if (event.key.keysym.sym == SDLK_p)
+                    if (LOWORD(event.syswm.msg->msg.win.wParam) == SWAP_MOVE)
                     {
                         // Swap piece
                         gameBoard->boardSwap();

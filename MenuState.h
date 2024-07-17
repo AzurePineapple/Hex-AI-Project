@@ -28,7 +28,8 @@ enum MenuIDS
     MCTS_ITER_1000,
     MCTS_ITER_10000,
     MCTS_ITER_100000,
-    START_GAME
+    START_GAME,
+    SWAP_MOVE
 };
 
 // Structure to hold menu state values
