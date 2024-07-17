@@ -28,6 +28,15 @@ void ToggleMenuItem(HMENU hMenu, int itemID, int &currentSelectedID)
     }
 }
 
+// Toggles menu items to grey and back when not in use
+void setMenuState(HMENU hMenu, UINT itemPos, bool enabled)
+{
+    // Set the windows api flags based on input
+    UINT state = enabled ? MF_ENABLED : (MF_DISABLED | MF_GRAYED);
+    EnableMenuItem(hMenu, itemPos, MF_BYPOSITION | state);
+}
+
+// Create the menu objects
 HMENU CreateMainMenu(MenuState options)
 {
     HMENU hMenu = CreateMenu();
@@ -108,16 +117,24 @@ HMENU CreateMainMenu(MenuState options)
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)mctsOptions, "MCTS Options");
 
-    // Append a start button
-    AppendMenu(hMenu, MF_STRING, START_GAME, "Start Game");
     // Append the swap button
     AppendMenu(hMenu, MF_STRING, SWAP_MOVE, "Swap Move");
+    // Append a start button
+    AppendMenu(hMenu, MF_STRING, START_GAME, "Start Game");
 
     return hMenu;
 }
 
-void StartGame(SDL_Handler *handler, MenuState options)
+void StartGame(SDL_Handler *handler, MenuState options, HMENU hMenu)
 {
+    // Turn settings menu's off when game is started
+    setMenuState(hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
+    setMenuState(hMenu, 1, false);
+    setMenuState(hMenu, 2, false);
+    setMenuState(hMenu, 3, false);
+    setMenuState(hMenu, 4, false);
+
+    // Create the game object
     Game *newGame = new Game(options, handler);
 }
 
@@ -182,7 +199,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
         ToggleMenuItem(iterationLimitMenu, wmId, options.selectedMCTSIterationLimit);
         break;
     case START_GAME:
-        StartGame(handler, options);
+        StartGame(handler, options, hMenu);
         break;
     }
 }
@@ -257,8 +274,8 @@ int main(int argv, char **args)
     HWND hwnd = wmInfo.info.win.window;
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(handler));
 
-    HMENU hmenu = CreateMainMenu(options);
-    SetMenu(hwnd, hmenu);
+    HMENU hMenu = CreateMainMenu(options);
+    SetMenu(hwnd, hMenu);
 
     // Main message loop
     MSG msg;
