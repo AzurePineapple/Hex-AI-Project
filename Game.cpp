@@ -85,6 +85,14 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
             if (event.type == SDL_QUIT)
             {
                 quit = true;
+                break;
+            }
+
+            if (event.type == SDL_SYSWMEVENT && LOWORD(event.syswm.msg->msg.win.wParam) == RESET_GAME)
+            {
+                handler->showImage();
+                quit = true;
+                break;
             }
 
             // check the previousMove is being updated correctly

@@ -123,12 +123,31 @@ HMENU CreateMainMenu(MenuState options)
     AppendMenu(hMenu, MF_STRING, SWAP_MOVE, "Swap Move");
     // Append a start button
     AppendMenu(hMenu, MF_STRING, START_GAME, "Start Game");
+    // // Append a reset button
+    AppendMenu(hMenu, MF_STRING, RESET_GAME, "Reset Game");
 
     return hMenu;
 }
 
-void StartGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd)
+// TODO: this can't get called because we're stuck within the loop in Game class. Can't see solution instantly.
+void resetGame(Game *game, HWND hwnd, HMENU hMenu)
 {
+    if (game != nullptr)
+    {
+        delete game;
+        game = nullptr;
+    }
+    
+    enableAllMenus(hwnd, hMenu);
+}
+
+void startGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd, Game *game)
+{
+    if (game != nullptr)
+    {
+        delete game;
+    }
+
     // Turn settings menu's off when game is started
     setMenuState(hwnd, hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
     setMenuState(hwnd, hMenu, 1, false); // playerOneOptions
@@ -138,10 +157,10 @@ void StartGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd)
     setMenuState(hwnd, hMenu, 5, false); // swapbutton (reenabled at beginning of game cycle)
 
     // Create the game object
-    Game *newGame = new Game(options, handler, hMenu, hwnd);
+    game = new Game(options, handler, hMenu, hwnd);
 }
 
-void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuState &options)
+void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuState &options, Game *game)
 {
     int wmId = LOWORD(wParam);
 
@@ -203,13 +222,16 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
         ToggleMenuItem(iterationLimitMenu, wmId, options.selectedMCTSIterationLimit);
         break;
     case START_GAME:
-        StartGame(handler, options, hMenu, hwnd);
+        startGame(handler, options, hMenu, hwnd, game);
         break;
     case MM_TIME_3_SEC:
     case MM_TIME_5_SEC:
     case MM_TIME_10_SEC:
     case MM_TIME_30_SEC:
         ToggleMenuItem(mmTimeLimitMenu, wmId, options.selectedMinimaxTimeLimit);
+        break;
+    case RESET_GAME:
+        resetGame(game, hwnd, hMenu);
         break;
     }
 }
@@ -275,7 +297,12 @@ int main(int argv, char **args)
 
     SDL_Handler *handler = new SDL_Handler();
     handler->init();
+    handler->wipeScreen();
+    handler->showImage();
+    // Tells SDL events to listen to windows api events
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+
+    Game *game = nullptr;
 
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
@@ -306,7 +333,7 @@ int main(int argv, char **args)
             if (event.type == SDL_SYSWMEVENT)
             {
                 auto wParam = event.syswm.msg->msg.win.wParam;
-                ProcessMenuSelection(hwnd, wParam, handler, options);
+                ProcessMenuSelection(hwnd, wParam, handler, options, game);
             }
         }
     }

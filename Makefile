@@ -8,7 +8,7 @@ INCLUDE_PATHS = -I src/include
 LIBRARY_PATHS = -L src/lib
 
 # Specifies libraries we're linking against
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image # -lSDL2_ttf
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image #-lSDL2_ttf
 
 # Compiler flags
 COMPILER_FLAGS = -I src/include/SDL2 -Wno-unused-variable -fopenmp

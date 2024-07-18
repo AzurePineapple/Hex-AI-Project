@@ -34,6 +34,43 @@ void SDL_Handler::wipeScreen()
 {
     SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
     SDL_RenderClear(Renderer);
+    SDL_RenderPresent(Renderer);
+}
+
+void SDL_Handler::showImage()
+{
+    // load image as a surface
+    SDL_Surface *loadedSurface = IMG_Load("images/Idle Screen 1.png");
+    if (loadedSurface == NULL)
+    {
+        std::cout << "Unable to load image" << std::endl;
+        return;
+    }
+
+    // Convert image to texture
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
+    if (texture == NULL)
+    {
+        std::cout << "Could not create texture from surface" << std::endl;
+        SDL_FreeSurface(loadedSurface);
+        return;
+    }
+
+    // Free the surface
+    SDL_FreeSurface(loadedSurface);
+
+    // Clear the screen
+    SDL_SetRenderDrawColor(Renderer, 255, 255, 255, 255);
+    SDL_RenderClear(Renderer);
+
+    // Render the texture to the screen
+    SDL_RenderCopy(Renderer, texture, NULL, NULL);
+
+    // Update the screen
+    SDL_RenderPresent(Renderer);
+
+    // Free the texture
+    SDL_DestroyTexture(texture);
 }
 
 void SDL_Handler::cleanUp()
@@ -85,5 +122,14 @@ bool SDL_Handler::init()
             SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
         }
     }
+
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags))
+    {
+        std::cout << "SDL_Image could not initialise! SDL_Image Error: %s\n"
+                  << IMG_GetError() << std::endl;
+        return false;
+    }
+
     return true;
 }

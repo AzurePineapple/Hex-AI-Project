@@ -1,4 +1,6 @@
 #include "src/include/SDL2/SDL.h"
+#include "src/include/SDL2/SDL_image.h"
+// #include "src/include/SDL2/SDL_ttf.h"
 #include "SDL_syswm.h"
 // #include "SDL.h"
 
@@ -28,4 +30,6 @@ public:
     void renderBackground();
     // Clear the screen
     void wipeScreen();
+
+    void showImage();
 };
