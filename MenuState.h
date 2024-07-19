@@ -34,7 +34,12 @@ enum MenuIDS
     MM_TIME_5_SEC,
     MM_TIME_10_SEC,
     MM_TIME_30_SEC,
-    RESET_GAME
+    RESET_GAME,
+    BLACK_WHITE,
+    RED_BLUE,
+    GREEN_PURPLE,
+    BLUE_ORANGE,
+    BLUE_YELLOW
 };
 
 // Structure to hold menu state values
@@ -47,6 +52,7 @@ struct MenuState
     int selectedMinimaxTimeLimit = MM_TIME_10_SEC;    // Default to 10 seconds
     int selectedMCTSTimeLimit = MCTS_TIME_10_SEC;     // Default to 10 seconds
     int selectedMCTSIterationLimit = MCTS_ITER_10000; // Default to 10000 iterations
+    int selectedBoardColour = BLACK_WHITE;            // Default to black vs. white
 };
 
 // Toggles menu items to grey and back when not in use

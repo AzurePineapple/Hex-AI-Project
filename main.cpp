@@ -35,6 +35,7 @@ HMENU CreateMainMenu(MenuState options)
 
     // Create pop-up menu for board size options
     HMENU boardSizeMenu = CreatePopupMenu();
+    HMENU boardSettings = CreatePopupMenu();
     AppendMenu(boardSizeMenu, MF_STRING, BOARD_SIZE_5x5, "5x5");
     AppendMenu(boardSizeMenu, MF_STRING, BOARD_SIZE_6x6, "6x6");
     AppendMenu(boardSizeMenu, MF_STRING, BOARD_SIZE_7x7, "7x7");
@@ -45,8 +46,22 @@ HMENU CreateMainMenu(MenuState options)
 
     // Select the default value
     CheckMenuItem(boardSizeMenu, options.selectedBoardSize, MF_CHECKED);
-    // Add the sub menu to the main menu
-    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)boardSizeMenu, "Board Size");
+
+    HMENU boardColour = CreatePopupMenu();
+
+    AppendMenu(boardColour, MF_STRING, BLACK_WHITE, "Black/White");
+    AppendMenu(boardColour, MF_STRING, RED_BLUE, "Red/Blue");
+    AppendMenu(boardColour, MF_STRING, GREEN_PURPLE, "Green/Purple");
+    AppendMenu(boardColour, MF_STRING, BLUE_ORANGE, "Blue/Orange");
+    AppendMenu(boardColour, MF_STRING, BLUE_YELLOW, "Blue/Yellow");
+
+    CheckMenuItem(boardColour, options.selectedBoardColour, MF_CHECKED);
+
+    // Add the sub menus to the main menu
+    AppendMenu(boardSettings, MF_STRING | MF_POPUP, (UINT_PTR)boardSizeMenu, "Board Size");
+    AppendMenu(boardSettings, MF_STRING | MF_POPUP, (UINT_PTR)boardColour, "Board Colour");
+
+    AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)boardSettings, "Board Settings");
 
     // Create pop-up menu for player one's settings
     HMENU playerOneOptions = CreatePopupMenu();
@@ -119,17 +134,21 @@ HMENU CreateMainMenu(MenuState options)
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)mctsOptions, "MCTS Options");
 
-    // Append the swap button
-    AppendMenu(hMenu, MF_STRING, SWAP_MOVE, "Swap Move");
+    // Horizontal separator
+    AppendMenu(hMenu, MF_SEPARATOR, 0, NULL);
+    AppendMenu(hMenu, MF_STRING | MF_DISABLED, 0, "");
+
     // Append a start button
     AppendMenu(hMenu, MF_STRING, START_GAME, "Start Game");
     // // Append a reset button
     AppendMenu(hMenu, MF_STRING, RESET_GAME, "Reset Game");
 
+    // Append the swap button
+    AppendMenu(hMenu, MF_STRING, SWAP_MOVE, "Swap Move");
+
     return hMenu;
 }
 
-// TODO: this can't get called because we're stuck within the loop in Game class. Can't see solution instantly.
 void resetGame(Game *game, HWND hwnd, HMENU hMenu)
 {
     if (game != nullptr)
@@ -137,7 +156,7 @@ void resetGame(Game *game, HWND hwnd, HMENU hMenu)
         delete game;
         game = nullptr;
     }
-    
+
     enableAllMenus(hwnd, hMenu);
 }
 
@@ -148,13 +167,13 @@ void startGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd, 
         delete game;
     }
 
-    // Turn settings menu's off when game is started
+    // Turn settings menus off when game is started TODO:
     setMenuState(hwnd, hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
     setMenuState(hwnd, hMenu, 1, false); // playerOneOptions
     setMenuState(hwnd, hMenu, 2, false); // playerTwoOptions
     setMenuState(hwnd, hMenu, 3, false); // minimaxOptions
     setMenuState(hwnd, hMenu, 4, false); // mctsOptions
-    setMenuState(hwnd, hMenu, 5, false); // swapbutton (reenabled at beginning of game cycle)
+    setMenuState(hwnd, hMenu, 7, false); // swapbutton (reenabled at beginning of game cycle)
 
     // Create the game object
     game = new Game(options, handler, hMenu, hwnd);
@@ -165,7 +184,9 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     int wmId = LOWORD(wParam);
 
     HMENU hMenu = GetMenu(hwnd);
-    HMENU boardSizeMenu = GetSubMenu(hMenu, 0);
+    HMENU boardSettingsMenu = GetSubMenu(hMenu, 0);
+    HMENU boardSizeMenu = GetSubMenu(boardSettingsMenu, 0);
+    HMENU boardColourMenu = GetSubMenu(boardSettingsMenu, 1);
     HMENU playerOneOptions = GetSubMenu(hMenu, 1);
     HMENU playerTwoOptions = GetSubMenu(hMenu, 2);
     HMENU minimaxOptions = GetSubMenu(hMenu, 3);
@@ -233,6 +254,12 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     case RESET_GAME:
         resetGame(game, hwnd, hMenu);
         break;
+    case BLACK_WHITE:
+    case RED_BLUE:
+    case GREEN_PURPLE:
+    case BLUE_ORANGE:
+    case BLUE_YELLOW:
+        ToggleMenuItem(boardColourMenu, wmId, options.selectedBoardColour);
     }
 }
 

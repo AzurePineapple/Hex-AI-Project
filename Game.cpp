@@ -2,9 +2,10 @@
 
 Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 {
-    // Process incoming game options
+    // Process incoming game options TODO: Process piece colour selection!
 
     int size;
+    int boardColour;
     std::string playerOneType;
     std::string playerTwoType;
     int minimaxDepth;
@@ -12,11 +13,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     int mctsTimeLimit;
     int mctsIterLimit;
 
-    processOptions(options, size, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+    processOptions(options, size, boardColour, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
 
     assert(size > 0);
 
-    Board *gameBoard = new Board(size, 2);
+    Board *gameBoard = new Board(size, boardColour);
 
     if (playerOneType == "human")
     {
@@ -104,12 +105,12 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
             // Enable swap button on turn 1, disable after
             if (turnCounter == 1 && !swapEnabled)
             {
-                setMenuState(hwnd, hMenu, 5, true);
+                setMenuState(hwnd, hMenu, 7, true);
                 swapEnabled = true;
             }
             if (turnCounter == 2 && swapEnabled)
             {
-                setMenuState(hwnd, hMenu, 5, false);
+                setMenuState(hwnd, hMenu, 7, false);
                 swapEnabled = false;
             }
 
@@ -419,8 +420,9 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                 gameBoard->showBoard();
                 // Render the board to the screen
                 SDL_RenderPresent(handler->Renderer);
-                std::cout << "Closing window in 2 seconds!" << std::endl;
+                // std::cout << "Closing window in 2 seconds!" << std::endl;
                 Sleep(2000);
+                handler->showImage();
                 quit = true;
                 break;
             }
@@ -444,7 +446,7 @@ void Game::swapActivePlayer()
     }
 }
 
-void Game::processOptions(MenuState options, int &size, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit)
+void Game::processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit)
 {
     switch (options.selectedBoardSize)
     {
@@ -567,6 +569,27 @@ void Game::processOptions(MenuState options, int &size, std::string &playerOneTy
         break;
     default:
         throw new std::logic_error("Invalid mmTimeLimit enum");
+        break;
+    }
+    switch (options.selectedBoardColour)
+    {
+    case BLACK_WHITE:
+        boardColour = 1;
+        break;
+    case RED_BLUE:
+        boardColour = 2;
+        break;
+    case GREEN_PURPLE:
+        boardColour = 3;
+        break;
+    case BLUE_ORANGE:
+        boardColour = 4;
+        break;
+    case BLUE_YELLOW:
+        boardColour = 5;
+        break;
+
+    default:
         break;
     }
 }
