@@ -32,4 +32,6 @@ public:
     void wipeScreen();
 
     void showImage();
+
+    void displayLoading();
 };

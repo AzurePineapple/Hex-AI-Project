@@ -185,6 +185,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
             }
             else
             {
+                handler->displayLoading();
                 // Swap rule implementation
                 if (turnCounter == 1)
                 {

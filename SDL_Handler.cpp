@@ -73,6 +73,44 @@ void SDL_Handler::showImage()
     SDL_DestroyTexture(texture);
 }
 
+void SDL_Handler::displayLoading()
+{
+    SDL_Surface *loadedSurface = IMG_Load("images/LoadingIndicator.png");
+    if (loadedSurface == NULL)
+    {
+        std::cout << "Unable to load image" << std::endl;
+        return;
+    }
+
+    // Convert image to texture
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(Renderer, loadedSurface);
+    if (texture == NULL)
+    {
+        std::cout << "Could not create texture from surface" << std::endl;
+        SDL_FreeSurface(loadedSurface);
+        return;
+    }
+
+    // Get image dimensions
+    int imgWidth = loadedSurface->w / 4;
+    int imgHeight = loadedSurface->h / 4;
+
+    // Free the surface
+    SDL_FreeSurface(loadedSurface);
+
+    SDL_Rect renderCorner;
+    renderCorner = {SCREEN_WIDTH - imgWidth,
+                    0,
+                    imgWidth,
+                    imgHeight};
+
+    SDL_RenderCopy(Renderer, texture, NULL, &renderCorner);
+
+    SDL_RenderPresent(Renderer);
+
+    SDL_DestroyTexture(texture);
+}
+
 void SDL_Handler::cleanUp()
 {
     SDL_FreeSurface(screenSurface);
