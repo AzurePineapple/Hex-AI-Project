@@ -432,8 +432,9 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
                         // Check if both the cell and the bridge cell have a friendly tile in them
                         if (boardMatrix[i][j] == 1 && boardMatrix[bridge.first][bridge.second] == 1)
                         {
-                            AdjMat(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2; // TODO: think about this value
-                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2;
+                            // Value set higher than 2 (resistance between two adjacent pieces), but lower than 3 (resistance between a friendly piece and an empty cell). This makes a two bridge still a good connection, but not as good as an immediate neighbour, as they can still be broken
+                            AdjMat(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2.5;
+                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2.5;
                         }
                     }
                 }
@@ -580,8 +581,9 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
                         // Check if both the cell and the bridge cell have a friendly tile in them
                         if (boardMatrix[i][j] == 2 && boardMatrix[bridge.first][bridge.second] == 2)
                         {
-                            AdjMat_two(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2; // TODO: think about this value
-                            AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2;
+                            // Value set higher than 2 (resistance between two adjacent pieces), but lower than 3 (resistance between a friendly piece and an empty cell). This makes a two bridge still a good connection, but not as good as an immediate neighbour, as they can still be broken
+                            AdjMat_two(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2.5;
+                            AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2.5;
                         }
                     }
                 }
