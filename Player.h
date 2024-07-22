@@ -17,6 +17,7 @@ private:
     int mmTimeLimit;
     int mctsTimeLimit;
     int mctsIterLimit;
+    bool maxVisitsSelected;
 
 public:
     Player();

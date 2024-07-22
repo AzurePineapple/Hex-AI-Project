@@ -167,7 +167,7 @@ void startGame(SDL_Handler *handler, MenuState options, HMENU hMenu, HWND hwnd, 
         delete game;
     }
 
-    // Turn settings menus off when game is started TODO:
+    // Turn settings menus off when game is started
     setMenuState(hwnd, hMenu, 0, false); // Pass the menu to be set by position, i.e boardSize is 0, playerOne is 1 etc.
     setMenuState(hwnd, hMenu, 1, false); // playerOneOptions
     setMenuState(hwnd, hMenu, 2, false); // playerTwoOptions

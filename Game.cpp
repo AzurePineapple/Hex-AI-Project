@@ -2,7 +2,7 @@
 
 Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 {
-    // Process incoming game options TODO: Process piece colour selection!
+    // Process incoming game options
 
     int size;
     int boardColour;
@@ -328,8 +328,6 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         // Check if leading move should be swapped
                         if (movesToSwapSize9.find(previousMove) != movesToSwapSize9.end())
                         {
-                            std::vector<std::string> letters = {"a", "b", "c", "d", "e", "f", "g", "h", "i"};
-                            std::cout << "Opening Move: " << letters[previousMove.first] << "" << previousMove.second << std::endl;
                             gameBoard->boardSwap();
                             std::cout << "Swap performed" << std::endl;
                         }

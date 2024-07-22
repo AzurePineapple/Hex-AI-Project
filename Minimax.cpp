@@ -12,14 +12,7 @@ MiniMax::~MiniMax()
 
 std::pair<int, int> MiniMax::go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit)
 {
-    auto start = std::chrono::high_resolution_clock::now();
     auto bestMovePair = findBestMove(boardMatrix, blacksTurn, depth, time_limit);
-    auto stop = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-    std::cout << "Took: " << duration.count() << " microseconds" << std::endl;
-    std::cout << "Best move is at: " << std::endl;
-    std::cout << bestMovePair.first << ", " << bestMovePair.second << std::endl;
-
     return bestMovePair;
 }
 
@@ -39,6 +32,8 @@ std::vector<std::pair<int, int>> MiniMax::generateMoves(const std::vector<std::v
             }
         }
     }
+
+    availableMoves.shrink_to_fit();
 
     return availableMoves;
 }
@@ -106,7 +101,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
     if (depth == 0 || isTerminal(boardMatrix) || timeExceeded)
     {
         *noEvaluations += 1;
-        
+
         // Search the cache to see if the board state has been evaluated
         auto it = scoresMap.find(boardMatrix);
         if (it != scoresMap.end())
@@ -186,9 +181,6 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
 // Makes an initial call to recurse, and uses the result to produce the i,j of the best move
 std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit)
 {
-    std::vector<std::vector<float>> boardScores;
-    boardScores.resize(boardMatrix.size(), std::vector<float>(boardMatrix.size(), 9999999));
-
     float alpha = -std::numeric_limits<float>::infinity();
     float beta = std::numeric_limits<float>::infinity();
     std::pair<int, int> bestMove;
@@ -216,8 +208,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move
             boardMatrix[move.first][move.second] = 0;
-
-            boardScores[move.first][move.second] = moveVal;
 
             // If move value is better than previous, update best values
             if (moveVal < bestVal)
@@ -252,8 +242,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             // undo the move
             boardMatrix[move.first][move.second] = 0;
 
-            boardScores[move.first][move.second] = moveVal;
-
             // If move value is better than previous, update best values
             if (moveVal > bestVal)
             {
@@ -274,15 +262,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
         srand(time(0));
         bestMove = bestMoves[rand() % bestMoves.size()];
     }
-
-    // Print the best calculated board scores
-    // for (size_t i = 0; i < boardScores.size(); i++)
-    // {
-    //     for (size_t j = 0; j < boardScores.size(); j++)
-    //     {
-    //         std::cout << "Board Score at " << i << ", " << j << " is " << boardScores[i][j] << std::endl;
-    //     }
-    // }
 
     return bestMove;
 }

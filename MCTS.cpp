@@ -393,8 +393,8 @@ std::pair<bool, std::vector<std::pair<int, int>>> simulate(const std::vector<std
 {
     // Get available moves
     std::vector<std::pair<std::vector<std::vector<int>>, std::pair<int, int>>> availableMoves = getPossibleMoves(boardMatrix, playerCode);
-    double noAvailableMoves = availableMoves.size();
     // Work out how many moves the playerCode needs to make (half rounded up) - making sure to cast to double first
+    double noAvailableMoves = availableMoves.size();
     int noMovesToSelect = ceil(noAvailableMoves / 2);
     int boardSize = boardMatrix.size();
     int opponentPlayerCode = (playerCode == 1) ? 2 : 1; // Get player code of the opponent
@@ -507,7 +507,7 @@ std::pair<std::vector<bool>, std::vector<std::vector<std::pair<int, int>>>> para
     return {blackWins, resultMoves};
 }
 
-std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised)
+std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised, bool maxVisitsChild)
 {
     auto startTime = std::chrono::steady_clock::now();
     int numberOfThreads = 1;
@@ -517,7 +517,6 @@ std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, d
         // std::cout << "Number of threads used: " << numberOfThreads << std::endl;
     }
 
-    // TODO: look into setting iteration limit as root.visits?
     for (int i = 0; i < iterations; i++)
     {
         auto currentTime = std::chrono::steady_clock::now();
@@ -565,10 +564,10 @@ std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, d
         if (isParallelised)
         {
             // Returns the result of the simulation, and the moves taken in that simulation
-            std::pair<std::vector<bool>, std::vector<std::vector<std::pair<int, int>>>> results = parallelSimulate(node->boardMatrix, currentPlayerCode, numberOfThreads);
+            std::pair<std::vector<bool>, std::vector<std::vector<std::pair<int, int>>>> parallelResults = parallelSimulate(node->boardMatrix, currentPlayerCode, numberOfThreads);
 
-            std::vector<bool> blackWins = results.first;
-            std::vector<std::vector<std::pair<int, int>>> simMoves = results.second;
+            std::vector<bool> blackWins = parallelResults.first;
+            std::vector<std::vector<std::pair<int, int>>> simMoves = parallelResults.second;
 
             for (size_t i = 0; i < blackWins.size(); i++)
             {
@@ -579,9 +578,9 @@ std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, d
         else
         {
             // Simulation
-            std::pair<bool, std::vector<std::pair<int, int>>> fart = simulate(node->boardMatrix, currentPlayerCode); // Returns true if black wins
-            bool blackWon = fart.first;
-            std::vector<std::pair<int, int>> moves = fart.second;
+            std::pair<bool, std::vector<std::pair<int, int>>> sequentialResults = simulate(node->boardMatrix, currentPlayerCode); // Returns true if black wins
+            bool blackWon = sequentialResults.first;
+            std::vector<std::pair<int, int>> moves = sequentialResults.second;
             // Backpropagation
             backpropagate(node, blackWon, moves);
         }
@@ -598,23 +597,25 @@ std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, d
 
     for (auto &childPtr : root->children)
     {
-        // To show children of root node - Verified they are all there
-        // childPtr->show();
-
-        // Max Visits Logic (Robust Child)
-        if (childPtr->visits > maxVisits)
+        if (maxVisitsChild)
         {
-            bestChild = std::move(childPtr);
-            maxVisits = bestChild->visits;
+            // Max Visits Logic (Robust Child)
+            if (childPtr->visits > maxVisits)
+            {
+                bestChild = std::move(childPtr);
+                maxVisits = bestChild->visits;
+            }
         }
-
-        // Highest winrate logic - plays sensibly towards the end but it's too late
-        // double winrate = childPtr->reward / childPtr->visits;
-        // if (winrate > maxWinRate)
-        // {
-        //     bestChild = std::move(childPtr);
-        //     maxWinRate = winrate;
-        // }
+        else
+        {
+            // Highest winrate logic
+            double winrate = childPtr->reward / childPtr->visits;
+            if (winrate > maxWinRate)
+            {
+                bestChild = std::move(childPtr);
+                maxWinRate = winrate;
+            }
+        }
     }
     return bestChild; // Return the best child node
 }
