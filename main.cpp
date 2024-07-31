@@ -263,25 +263,6 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     }
 }
 
-// LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-// {
-//     static MenuState options;
-//     switch (message)
-//     {
-//     case WM_COMMAND:
-//     {
-//         SDL_Handler *handler = reinterpret_cast<SDL_Handler *>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
-//         ProcessMenuSelection(hwnd, wParam, handler, options);
-//     }
-//     break;
-//     case WM_DESTROY:
-//         PostQuitMessage(0);
-//         break;
-//     default:
-//         return DefWindowProc(hwnd, message, wParam, lParam);
-//     }
-//     return 0;
-// }
 
 int main(int argv, char **args)
 {
@@ -289,15 +270,14 @@ int main(int argv, char **args)
 
     // // For testing Evaluation function
     // std::vector<std::vector<int>> boardMatrix;
-    // boardMatrix.resize(3, std::vector<int>(3, 0));
+    // boardMatrix.resize(2, std::vector<int>(2, 0));
 
     // int boardSize = boardMatrix.size();
     // // boardMatrix[1][1] = 1;
     // ResistanceDistance *test = new ResistanceDistance();
 
     // boardMatrix[0][1] = 1;
-    // boardMatrix[1][2] = 1;
-    // boardMatrix[2][0] = 2;
+    // boardMatrix[1][0] = 2;
 
     // auto score = test->evaluate(boardMatrix);
     // std::cout << score << std::endl;

@@ -507,7 +507,7 @@ std::pair<std::vector<bool>, std::vector<std::vector<std::pair<int, int>>>> para
     return {blackWins, resultMoves};
 }
 
-std::unique_ptr<TreeNode> MCTS(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised, bool maxVisitsChild)
+std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised, bool maxVisitsChild)
 {
     auto startTime = std::chrono::steady_clock::now();
     int numberOfThreads = 1;

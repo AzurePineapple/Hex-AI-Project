@@ -147,7 +147,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
         }
 
         // Second, get the best child of the new board position
-        std::unique_ptr<TreeNode> bestChild = MCTS(root.get(), playerColourCode, mctsIterLimit, mctsTimeLimit, isParallelised, true);
+        std::unique_ptr<TreeNode> bestChild = MCTSleaf(root.get(), playerColourCode, mctsIterLimit, mctsTimeLimit, isParallelised, true);
 
         // std::cout << "Selected best child:" << std::endl;
         // bestChild->show();
