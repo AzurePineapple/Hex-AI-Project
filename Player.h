@@ -40,7 +40,7 @@ public:
 };
 
 // Create global variables for root parallelisation, this is hacky and probably bad practice but I'm short on time
-std::vector<TreeNode *> localRootVector;
+std::vector<std::vector<int>> valuesVector;
 std::mutex mtx;
 
 // Thread function

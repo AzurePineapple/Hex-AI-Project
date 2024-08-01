@@ -124,7 +124,7 @@ HMENU CreateMainMenu(MenuState options)
 
     AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_1000, "1000");
     AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_10000, "10000");
-    AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_100000, "100000");
+    AppendMenu(iterationLimitMenu, MF_STRING, MCTS_ITER_25000, "25000");
 
     // Select the default value
     CheckMenuItem(iterationLimitMenu, options.selectedMCTSIterationLimit, MF_CHECKED);
@@ -249,7 +249,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
         break;
     case MCTS_ITER_1000:
     case MCTS_ITER_10000:
-    case MCTS_ITER_100000:
+    case MCTS_ITER_25000:
         // mcts menu changes toggle mcts menu
         ToggleMenuItem(iterationLimitMenu, wmId, options.selectedMCTSIterationLimit);
         break;
@@ -339,6 +339,7 @@ int main(int argv, char **args)
     // Main message loop
     MSG msg;
     bool running = true;
+    bool clickDetected = false;
     while (running)
     {
         // Check for SDL events
@@ -350,7 +351,6 @@ int main(int argv, char **args)
                 PostQuitMessage(0);
                 running = false;
             }
-            // Handle other SDL events as needed
 
             if (event.type == SDL_SYSWMEVENT)
             {

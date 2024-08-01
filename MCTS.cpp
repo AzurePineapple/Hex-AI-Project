@@ -12,6 +12,7 @@
 #include <thread>
 #include <mutex>
 #include <omp.h>
+#include <cassert>
 
 struct TreeNode
 {
@@ -513,7 +514,8 @@ std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iteration
     int numberOfThreads = 1;
     if (isParallelised)
     {
-        numberOfThreads = std::thread::hardware_concurrency();
+        // numberOfThreads = std::thread::hardware_concurrency();
+        numberOfThreads = 8;
         // std::cout << "Number of threads used: " << numberOfThreads << std::endl;
     }
 

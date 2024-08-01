@@ -344,5 +344,5 @@ public:
     // Swap the players after they take their turns
     void swapActivePlayer();
 
-    void processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit, bool &rootParallelised);
+    void processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, double &mmTimeLimit, double &mctsTimeLimit, int &mctsIterLimit, bool &rootParallelised);
 };

@@ -154,14 +154,12 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             // Root Parallelisation method
 
             // Create as many threads as possible
-            const int num_threads = std::thread::hardware_concurrency();
+            const int num_threads = 8;
+            assert(num_threads <= std::thread::hardware_concurrency());
             std::vector<std::thread> threads;
 
-            // Clear the global localRootVector so that it can't be used by an opponent
-            for (auto localRoot : localRootVector)
-            {
-                delete localRoot;
-            }
+            // Clear the vector containing the root values
+            valuesVector.clear();
 
             for (int i = 0; i < num_threads; i++)
             {
@@ -175,33 +173,20 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             }
 
             // Create vector to store the data for each child, grouped by child row and column
-            std::map<std::pair<int, int>, std::vector<int>> childValues;
+            std::map<std::pair<int, int>, int> childValues;
 
-            // Iterate through all the children of all the localRoots
-            for (auto &&localRoot : localRootVector)
+            for (auto &&childData : valuesVector)
             {
-                for (auto &&child : localRoot->children)
+                // Check if child not in map already
+                if (childValues.find({childData[0], childData[1]}) == childValues.end())
                 {
-                    // Create a vector of values, some may be unnecessary but include them for alternate bestChild selection metrics
-                    std::vector<int> values = {child->visits,
-                                               child->reward,
-                                               child->raveVisits,
-                                               child->raveReward};
-
-                    // Check if child not in map already
-                    if (childValues.find({child->row, child->col}) == childValues.end())
-                    {
-                        // If not, add the key to the map with the values
-                        childValues[{child->row, child->col}] = values;
-                    }
-                    else
-                    {
-                        // If so, add the new values to the ones stored in the map
-                        for (size_t i = 0; i < values.size(); i++)
-                        {
-                            childValues[{child->row, child->col}][i] += values[i];
-                        }
-                    }
+                    // If not, add the key to the map with the values
+                    childValues[{childData[0], childData[1]}] = childData[2];
+                }
+                else
+                {
+                    // If so, add the new visit value to the ones stored in the map
+                    childValues[{childData[0], childData[1]}] += childData[2];
                 }
             }
 
@@ -210,10 +195,9 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             std::pair<int, int> maxKey;
             for (const auto &entry : childValues)
             {
-                const std::vector<int> &vec = entry.second;
-                if (vec[0] > maxValue)
+                if (entry.second > maxValue)
                 {
-                    maxValue = vec[0];
+                    maxValue = entry.second;
                     maxKey = entry.first;
                 }
             }
@@ -286,10 +270,6 @@ bool Player::getIsComputer()
 
 Player::~Player()
 {
-    for (auto localRoot : localRootVector)
-    {
-        delete localRoot;
-    }
 }
 
 // Thread function
@@ -302,9 +282,18 @@ void mctsThread(std::vector<std::vector<int>> boardMatrix, int row, int col, Tre
     // Perform the mcts search
     // Modifies localRoot in place so no need to return anything
     MCTSroot(localRoot, playerColourCode, mctsIterLimit, mctsTimeLimit);
+    for (auto &&child : localRoot->children)
+    {
+        std::vector<int> values = {child->row,
+                                   child->col,
+                                   child->visits};
 
-    // Add the result of the mcts search to a vector, using a mutex to ensure no data corruption
-    mtx.lock();
-    localRootVector.push_back(localRoot);
-    mtx.unlock();
+        // Add the child values of the mcts search to a vector, using a mutex to ensure no data corruption
+        mtx.lock();
+        valuesVector.push_back(values);
+        mtx.unlock();
+    }
+
+    // Delete manually allocated memory so as to not cause memory leak
+    delete localRoot;
 }

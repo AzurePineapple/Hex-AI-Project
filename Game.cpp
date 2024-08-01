@@ -9,8 +9,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     std::string playerOneType;
     std::string playerTwoType;
     int minimaxDepth;
-    int mmTimeLimit;
-    int mctsTimeLimit;
+    double mmTimeLimit;
+    double mctsTimeLimit;
     int mctsIterLimit;
     bool rootParallelised;
 
@@ -446,7 +446,7 @@ void Game::swapActivePlayer()
     }
 }
 
-void Game::processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit, bool &rootParallelised)
+void Game::processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, double &mmTimeLimit, double &mctsTimeLimit, int &mctsIterLimit, bool &rootParallelised)
 {
     switch (options.selectedBoardSize)
     {
@@ -523,16 +523,16 @@ void Game::processOptions(MenuState options, int &size, int &boardColour, std::s
     switch (options.selectedMCTSTimeLimit)
     {
     case MCTS_TIME_3_SEC:
-        mctsTimeLimit = 3;
+        mctsTimeLimit = 3.0;
         break;
     case MCTS_TIME_5_SEC:
-        mctsTimeLimit = 5;
+        mctsTimeLimit = 5.0;
         break;
     case MCTS_TIME_10_SEC:
-        mctsTimeLimit = 10;
+        mctsTimeLimit = 10.0;
         break;
     case MCTS_TIME_30_SEC:
-        mctsTimeLimit = 30;
+        mctsTimeLimit = 30.0;
         break;
     default:
         throw new std::logic_error("Invalid mcts time enum");
@@ -546,8 +546,8 @@ void Game::processOptions(MenuState options, int &size, int &boardColour, std::s
     case MCTS_ITER_10000:
         mctsIterLimit = 10000;
         break;
-    case MCTS_ITER_100000:
-        mctsIterLimit = 100000;
+    case MCTS_ITER_25000:
+        mctsIterLimit = 25000;
         break;
     default:
         throw new std::logic_error("Invalid mcts iter enum");
@@ -556,16 +556,16 @@ void Game::processOptions(MenuState options, int &size, int &boardColour, std::s
     switch (options.selectedMinimaxTimeLimit)
     {
     case MM_TIME_3_SEC:
-        mmTimeLimit = 3;
+        mmTimeLimit = 3.0;
         break;
     case MM_TIME_5_SEC:
-        mmTimeLimit = 5;
+        mmTimeLimit = 5.0;
         break;
     case MM_TIME_10_SEC:
-        mmTimeLimit = 10;
+        mmTimeLimit = 10.0;
         break;
     case MM_TIME_30_SEC:
-        mmTimeLimit = 30;
+        mmTimeLimit = 30.0;
         break;
     default:
         throw new std::logic_error("Invalid mmTimeLimit enum");
