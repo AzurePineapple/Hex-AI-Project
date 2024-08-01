@@ -12,8 +12,9 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     int mmTimeLimit;
     int mctsTimeLimit;
     int mctsIterLimit;
+    bool rootParallelised;
 
-    processOptions(options, size, boardColour, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+    processOptions(options, size, boardColour, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
 
     assert(size > 0);
 
@@ -25,11 +26,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     }
     else if (playerOneType == "minimax")
     {
-        one.createPlayer("computer", 1, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+        one.createPlayer("computer", 1, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
     }
     else if (playerOneType == "mcts")
     {
-        one.createPlayer("computer", 1, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+        one.createPlayer("computer", 1, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
     }
 
     if (playerTwoType == "human")
@@ -38,11 +39,11 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
     }
     else if (playerTwoType == "minimax")
     {
-        two.createPlayer("computer", 2, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+        two.createPlayer("computer", 2, "minimax", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
     }
     else if (playerTwoType == "mcts")
     {
-        two.createPlayer("computer", 2, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit);
+        two.createPlayer("computer", 2, "mcts", size, true, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
     }
 
     // MCTS
@@ -445,7 +446,7 @@ void Game::swapActivePlayer()
     }
 }
 
-void Game::processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit)
+void Game::processOptions(MenuState options, int &size, int &boardColour, std::string &playerOneType, std::string &playerTwoType, int &minimaxDepth, int &mmTimeLimit, int &mctsTimeLimit, int &mctsIterLimit, bool &rootParallelised)
 {
     switch (options.selectedBoardSize)
     {
@@ -587,8 +588,21 @@ void Game::processOptions(MenuState options, int &size, int &boardColour, std::s
     case BLUE_YELLOW:
         boardColour = 5;
         break;
+    default:
+        throw new std::logic_error("Invalid colour enum");
+        break;
+    }
+    switch (options.selectedParallelStyle)
+    {
+    case ROOT:
+        rootParallelised = true;
+        break;
+    case LEAF:
+        rootParallelised = false;
+        break;
 
     default:
+        throw new std::logic_error("Invalid rootPara enum");
         break;
     }
 }

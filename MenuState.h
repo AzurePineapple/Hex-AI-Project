@@ -39,7 +39,9 @@ enum MenuIDS
     RED_BLUE,
     GREEN_PURPLE,
     BLUE_ORANGE,
-    BLUE_YELLOW
+    BLUE_YELLOW,
+    ROOT,
+    LEAF
 };
 
 // Structure to hold menu state values
@@ -53,6 +55,7 @@ struct MenuState
     int selectedMCTSTimeLimit = MCTS_TIME_10_SEC;     // Default to 10 seconds
     int selectedMCTSIterationLimit = MCTS_ITER_10000; // Default to 10000 iterations
     int selectedBoardColour = BLACK_WHITE;            // Default to black vs. white
+    int selectedParallelStyle = ROOT;                 // Default to root
 };
 
 // Toggles menu items to grey and back when not in use

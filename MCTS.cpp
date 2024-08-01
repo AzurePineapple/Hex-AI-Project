@@ -19,15 +19,15 @@ struct TreeNode
     std::vector<std::unique_ptr<TreeNode>> children;
     TreeNode *parent;
     int visits;
-    double reward;
+    int reward;
     int raveVisits;
-    double raveReward;
+    int raveReward;
     int row;
     int col;
     int playerOwner;
 
     TreeNode(std::vector<std::vector<int>> boardMatrix, int i = -1, int j = -1, TreeNode *parent = nullptr, int whoPlayed = 0)
-        : boardMatrix(boardMatrix), parent(parent), visits(0), reward(0.0), raveVisits(0), raveReward(0.0), row(i), col(j), playerOwner(whoPlayed){};
+        : boardMatrix(boardMatrix), parent(parent), visits(0), reward(0.0), raveVisits(0), raveReward(0.0), row(i), col(j), playerOwner(whoPlayed) {};
 
     // Function to get the child of the node that has a matching board state
     TreeNode *findChild(std::vector<std::vector<int>> board)
@@ -618,4 +618,62 @@ std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iteration
         }
     }
     return bestChild; // Return the best child node
+}
+
+void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit)
+{
+    auto startTime = std::chrono::steady_clock::now();
+
+    for (int i = 0; i < iterations; i++)
+    {
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsedTime = currentTime - startTime;
+        if (elapsedTime.count() > timeLimit)
+        {
+            // std::cout << "Time limit of " << timeLimit << " seconds reached, performed " << i << " iterations." << std::endl;
+            break;
+        }
+
+        TreeNode *node = root; // Get pointer to root node
+        int currentPlayerCode = playerCode;
+
+        // Selection
+        while (!node->children.empty() && !isTerminal(node->boardMatrix))
+        {
+            node = selectChild(node);
+            if (node == nullptr)
+            {
+                throw std::logic_error("Selected nullptr");
+            }
+
+            currentPlayerCode = (currentPlayerCode == 1) ? 2 : 1;
+        }
+
+        // Expansion
+        if (!isTerminal(node->boardMatrix))
+        {
+            expand(node, currentPlayerCode);
+            if (!node->children.empty())
+            {
+                int randChildIndex = rand() % node->children.size();
+                node = node->children[randChildIndex].get(); // Get raw pointer to random child
+            }
+            currentPlayerCode = (currentPlayerCode == 1) ? 2 : 1;
+        }
+
+        // Simulation
+        std::pair<bool, std::vector<std::pair<int, int>>> sequentialResults = simulate(node->boardMatrix, currentPlayerCode); // Returns true if black wins
+        bool blackWon = sequentialResults.first;
+        std::vector<std::pair<int, int>> moves = sequentialResults.second;
+
+        // Backpropagation
+        backpropagate(node, blackWon, moves);
+    }
+
+    if (root->children.empty())
+    {
+        throw new std::logic_error("Root has no children");
+    }
+
+    return; // Return nothing as root has been modified in place
 }

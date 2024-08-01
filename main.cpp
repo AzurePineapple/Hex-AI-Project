@@ -113,6 +113,7 @@ HMENU CreateMainMenu(MenuState options)
     HMENU mctsOptions = CreatePopupMenu();
     HMENU timeLimitMenu = CreatePopupMenu();
     HMENU iterationLimitMenu = CreatePopupMenu();
+    HMENU parallelStyleMenu = CreatePopupMenu();
     AppendMenu(timeLimitMenu, MF_STRING, MCTS_TIME_3_SEC, "3 Sec");
     AppendMenu(timeLimitMenu, MF_STRING, MCTS_TIME_5_SEC, "5 Sec");
     AppendMenu(timeLimitMenu, MF_STRING, MCTS_TIME_10_SEC, "10 Sec");
@@ -127,10 +128,19 @@ HMENU CreateMainMenu(MenuState options)
 
     // Select the default value
     CheckMenuItem(iterationLimitMenu, options.selectedMCTSIterationLimit, MF_CHECKED);
+
+    AppendMenu(parallelStyleMenu, MF_STRING, ROOT, "Root Parallelisation");
+    AppendMenu(parallelStyleMenu, MF_STRING, LEAF, "Leaf Parallelisation");
+
+    // Select the default value
+    CheckMenuItem(parallelStyleMenu, options.selectedParallelStyle, MF_CHECKED);
+
     // Add the sub sub menu to the sub menu
     AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)timeLimitMenu, "Time Limit");
     // Add the sub sub menu to the sub menu
     AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)iterationLimitMenu, "Iteration Limit");
+    // Add the sub sub menu to the sub menu
+    AppendMenu(mctsOptions, MF_STRING | MF_POPUP, (UINT_PTR)parallelStyleMenu, "Parallelisation Type");
     // Add the sub menu to the main menu
     AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT_PTR)mctsOptions, "MCTS Options");
 
@@ -195,6 +205,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     HMENU mctsOptions = GetSubMenu(hMenu, 4);
     HMENU timeLimitMenu = GetSubMenu(mctsOptions, 0);
     HMENU iterationLimitMenu = GetSubMenu(mctsOptions, 1);
+    HMENU parallelStyleMenu = GetSubMenu(mctsOptions, 2);
 
     switch (wmId)
     {
@@ -260,9 +271,13 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
     case BLUE_ORANGE:
     case BLUE_YELLOW:
         ToggleMenuItem(boardColourMenu, wmId, options.selectedBoardColour);
+        break;
+    case ROOT:
+    case LEAF:
+        ToggleMenuItem(parallelStyleMenu, wmId, options.selectedParallelStyle);
+        break;
     }
 }
-
 
 int main(int argv, char **args)
 {
