@@ -159,58 +159,6 @@ std::vector<std::pair<int, int>> getNeighbours(int i, int j, int size)
     return neighbours;
 }
 
-// Redundant
-// A breadth first search to determine if black has won the game - we only need this because if black hasn't won, white has.
-bool BlackWonBFS(std::vector<std::pair<int, int>> startPositions, std::vector<std::vector<int>> boardMatrix)
-{
-    int size = boardMatrix.size();
-    // Store visited nodes
-    std::set<std::pair<int, int>> visited;
-    // Create the queue of nodes to explore
-    std::queue<std::pair<int, int>> nodeQueue;
-
-    // Add the starting nodes to the queue
-    for (auto pos : startPositions)
-    {
-        visited.insert(pos);
-        nodeQueue.push(pos);
-    }
-
-    // Do the BFS
-    while (!nodeQueue.empty())
-    {
-        std::pair<int, int> coordPair = nodeQueue.front(); // Grab the first element in the queue (FIFO)
-        nodeQueue.pop();
-        int x = coordPair.first;
-        int y = coordPair.second;
-
-        // Check if the current tile is in the bottom row, in which case black has won
-        if (x == size - 1)
-        {
-            return true;
-        }
-
-        // Iterate through the neighbours of the current tile
-        for (std::pair<int, int> neiCoords : getNeighbours(x, y, size))
-        {
-            int nx = neiCoords.first;
-            int ny = neiCoords.second;
-
-            // Check if the neighbour is a black tile, and if it is not already in the list of visited nodes
-            if (boardMatrix[nx][ny] == 1 && visited.find({nx, ny}) == visited.end())
-            {
-                // You can use curly braces for pair initialisation I hate this damn language
-                visited.insert({nx, ny});
-                nodeQueue.push({nx, ny});
-            }
-        }
-    }
-
-    // If queue is exhausted without finding a black win, then return false
-    return false;
-}
-
-// Thinking about it this may be more efficient for our needs of simply finding an existing path - basically just involved changing a queue to a stack and taking FILO
 bool BlackWonDFS(std::vector<std::pair<int, int>> startPositions, std::vector<std::vector<int>> boardMatrix)
 {
     int size = boardMatrix.size();
@@ -295,16 +243,6 @@ double getResult(std::vector<std::vector<int>> boardMatrix)
     }
 
     return blackWon;
-}
-
-// Returns the classic UCT value of a node
-double getUCTValue(TreeNode *node, TreeNode *child)
-{
-    double C = 1.0; // exploration constant
-    // Add a small value to the number of visits to avoid division by 0 error, and ensure that the division gives a large value as a result
-    double UCT = (child->reward / (child->visits + 1e-8)) +
-                 C * sqrt((2 * log(node->visits)) / (child->visits + 1e-8));
-    return UCT;
 }
 
 // Returns the UCT-RAVE value of the node
@@ -678,4 +616,66 @@ void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit)
     }
 
     return; // Return nothing as root has been modified in place
+}
+
+// Redundant
+// A breadth first search to determine if black has won the game - we only need this because if black hasn't won, white has.
+bool BlackWonBFS(std::vector<std::pair<int, int>> startPositions, std::vector<std::vector<int>> boardMatrix)
+{
+    int size = boardMatrix.size();
+    // Store visited nodes
+    std::set<std::pair<int, int>> visited;
+    // Create the queue of nodes to explore
+    std::queue<std::pair<int, int>> nodeQueue;
+
+    // Add the starting nodes to the queue
+    for (auto pos : startPositions)
+    {
+        visited.insert(pos);
+        nodeQueue.push(pos);
+    }
+
+    // Do the BFS
+    while (!nodeQueue.empty())
+    {
+        std::pair<int, int> coordPair = nodeQueue.front(); // Grab the first element in the queue (FIFO)
+        nodeQueue.pop();
+        int x = coordPair.first;
+        int y = coordPair.second;
+
+        // Check if the current tile is in the bottom row, in which case black has won
+        if (x == size - 1)
+        {
+            return true;
+        }
+
+        // Iterate through the neighbours of the current tile
+        for (std::pair<int, int> neiCoords : getNeighbours(x, y, size))
+        {
+            int nx = neiCoords.first;
+            int ny = neiCoords.second;
+
+            // Check if the neighbour is a black tile, and if it is not already in the list of visited nodes
+            if (boardMatrix[nx][ny] == 1 && visited.find({nx, ny}) == visited.end())
+            {
+                // You can use curly braces for pair initialisation I hate this damn language
+                visited.insert({nx, ny});
+                nodeQueue.push({nx, ny});
+            }
+        }
+    }
+
+    // If queue is exhausted without finding a black win, then return false
+    return false;
+}
+
+
+// Returns the classic UCT value of a node
+double getUCTValue(TreeNode *node, TreeNode *child)
+{
+    double C = 1.0; // exploration constant
+    // Add a small value to the number of visits to avoid division by 0 error, and ensure that the division gives a large value as a result
+    double UCT = (child->reward / (child->visits + 1e-8)) +
+                 C * sqrt((2 * log(node->visits)) / (child->visits + 1e-8));
+    return UCT;
 }

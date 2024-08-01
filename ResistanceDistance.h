@@ -52,7 +52,7 @@ public:
     ResistanceDistance(/* args */);
     ~ResistanceDistance();
 
-    float evaluate(const std::vector<std::vector<int>> &boardMatrix, int i, int j);
+    float evaluate(const std::vector<std::vector<int>> &boardMatrix);
     float evaluateBoard(std::vector<std::vector<int>> boardMatrix);
     float evaluateMove(std::vector<std::vector<int>> boardMatrix, int i, int j);
     int getOneDIndex(int i, int j);

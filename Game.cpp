@@ -92,7 +92,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 
             if (event.type == SDL_SYSWMEVENT && LOWORD(event.syswm.msg->msg.win.wParam) == RESET_GAME)
             {
-                handler->showImage();
+                handler->showMainScreen();
                 quit = true;
                 break;
             }
@@ -422,7 +422,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                 SDL_RenderPresent(handler->Renderer);
                 // std::cout << "Closing window in 2 seconds!" << std::endl;
                 Sleep(2000);
-                handler->showImage();
+                handler->showMainScreen();
                 quit = true;
                 break;
             }

@@ -10,12 +10,6 @@ MiniMax::~MiniMax()
 {
 }
 
-std::pair<int, int> MiniMax::go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit)
-{
-    auto bestMovePair = findBestMove(boardMatrix, blacksTurn, depth, time_limit);
-    return bestMovePair;
-}
-
 std::vector<std::pair<int, int>> MiniMax::generateMoves(const std::vector<std::vector<int>> &boardMatrix)
 {
     int boardSize = boardMatrix.size();
@@ -38,64 +32,7 @@ std::vector<std::pair<int, int>> MiniMax::generateMoves(const std::vector<std::v
     return availableMoves;
 }
 
-void MiniMax::createChildren(std::vector<std::vector<int>> boardMatrix, int playerCode)
-{
-    int boardSize = boardMatrix.size();
-    childStates.clear();
-    for (int i = 0; i < boardSize; i++)
-    {
-        for (int j = 0; j < boardSize; j++)
-        {
-            std::vector<std::vector<int>> testMatrix = boardMatrix;
-            if (testMatrix[i][j] == 0)
-            {
-                testMatrix[i][j] = playerCode;
-                childStates.push_back(testMatrix);
-            }
-        }
-    }
-}
-
-void MiniMax::printChildren()
-{
-    for (auto board : childStates)
-    {
-        int boardSize = board.size();
-        std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
-        for (int i = 0; i < boardSize; i++)
-        {
-            std::cout << std::string(i, ' ');
-            std::cout << "\\ ";
-            for (int j = 0; j < boardSize; j++)
-            {
-                std::cout << board[i][j] << " ";
-            }
-            std::cout << "\\" << std::endl;
-        }
-        std::cout << std::string(board.size(), ' ');
-        std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
-    }
-}
-
-void MiniMax::printChild(std::vector<std::vector<int>> board)
-{
-    int boardSize = board.size();
-    std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
-    for (int i = 0; i < boardSize; i++)
-    {
-        std::cout << std::string(i, ' ');
-        std::cout << "\\ ";
-        for (int j = 0; j < boardSize; j++)
-        {
-            std::cout << board[i][j] << " ";
-        }
-        std::cout << "\\" << std::endl;
-    }
-    std::cout << std::string(board.size(), ' ');
-    std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
-}
-
-float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y, int *noEvaluations, time_t start_time, double time_limit)
+float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noEvaluations, time_t start_time, double time_limit)
 {
     bool timeExceeded = difftime(time(NULL), start_time) >= time_limit;
     if (depth == 0 || isTerminal(boardMatrix) || timeExceeded)
@@ -110,7 +47,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
         }
         else
         {
-            float score = Evaluator->evaluate(boardMatrix, x, y);
+            float score = Evaluator->evaluate(boardMatrix);
             scoresMap[boardMatrix] = score;
             return score;
         }
@@ -129,7 +66,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
             boardMatrix[move.first][move.second] = 1;
 
             // Recursively evaluate board state in new state
-            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second, noEvaluations, start_time, time_limit);
+            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit);
 
             minEval = std::min(minEval, eval);
             beta = std::min(beta, minEval);
@@ -159,7 +96,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
             boardMatrix[move.first][move.second] = 2;
 
             // Recursively evaluate board state in new state
-            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second, noEvaluations, start_time, time_limit);
+            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit);
 
             maxEval = std::max(maxEval, eval);
             alpha = std::max(alpha, maxEval);
@@ -191,8 +128,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
     time_t start_time = time(NULL);
 
-    // TODO: IF eval is >~6, is winning move, so select it and break?
-
     if (blacksTurn)
     {
         float bestVal = std::numeric_limits<float>::infinity();
@@ -203,9 +138,9 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             boardMatrix[move.first][move.second] = 1;
             int noEvaluations = 0;
             // Get the evaluation function of the move
-            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second, &noEvaluations, start_time, time_limit);
-            std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
-            std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
+            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit);
+            // std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
+            // std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move
             boardMatrix[move.first][move.second] = 0;
 
@@ -220,7 +155,6 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             {
                 bestMoves.push_back(move);
             }
-            std::cout << "Finished evaluating a move" << std::endl;
         }
     }
 
@@ -236,7 +170,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
             int noEvaluations = 0;
             // Get the evaluation function of the move
-            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, move.first, move.second, &noEvaluations, start_time, time_limit);
+            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit);
             // std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
             // std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move
@@ -273,4 +207,47 @@ bool MiniMax::isTerminal(const std::vector<std::vector<int>> &boardMatrix)
     return std::all_of(boardMatrix.begin(), boardMatrix.end(), [](const std::vector<int> &row)
                        { return std::all_of(row.begin(), row.end(), [](int cell)
                                             { return cell != 0; }); });
+}
+
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+// Redundant function
+void MiniMax::createChildren(std::vector<std::vector<int>> boardMatrix, int playerCode)
+{
+    int boardSize = boardMatrix.size();
+    childStates.clear();
+    for (int i = 0; i < boardSize; i++)
+    {
+        for (int j = 0; j < boardSize; j++)
+        {
+            std::vector<std::vector<int>> testMatrix = boardMatrix;
+            if (testMatrix[i][j] == 0)
+            {
+                testMatrix[i][j] = playerCode;
+                childStates.push_back(testMatrix);
+            }
+        }
+    }
+}
+
+// Redundant function
+void MiniMax::printChildren()
+{
+    for (auto board : childStates)
+    {
+        int boardSize = board.size();
+        std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
+        for (int i = 0; i < boardSize; i++)
+        {
+            std::cout << std::string(i, ' ');
+            std::cout << "\\ ";
+            for (int j = 0; j < boardSize; j++)
+            {
+                std::cout << board[i][j] << " ";
+            }
+            std::cout << "\\" << std::endl;
+        }
+        std::cout << std::string(board.size(), ' ');
+        std::cout << std::string(2 * board.size() + 2, '-') << std::endl;
+    }
 }

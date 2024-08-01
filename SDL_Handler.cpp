@@ -37,7 +37,7 @@ void SDL_Handler::wipeScreen()
     SDL_RenderPresent(Renderer);
 }
 
-void SDL_Handler::showImage()
+void SDL_Handler::showMainScreen()
 {
     // load image as a surface
     SDL_Surface *loadedSurface = IMG_Load("images/Idle Screen 1.png");

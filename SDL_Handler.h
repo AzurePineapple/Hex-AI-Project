@@ -31,7 +31,7 @@ public:
     // Clear the screen
     void wipeScreen();
 
-    void showImage();
+    void showMainScreen();
 
     void displayLoading();
 };

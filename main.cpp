@@ -320,7 +320,7 @@ int main(int argv, char **args)
     SDL_Handler *handler = new SDL_Handler();
     handler->init();
     handler->wipeScreen();
-    handler->showImage();
+    handler->showMainScreen();
     // Tells SDL events to listen to windows api events
     SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 

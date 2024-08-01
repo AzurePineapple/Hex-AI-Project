@@ -25,14 +25,12 @@ public:
     ~MiniMax();
 
     void createChildren(std::vector<std::vector<int>> boardMatrix, int playerCode);
-    float evaluateBoard(std::vector<std::vector<int>> boardMatrix, int i, int j, bool blacksTurn);
 
     void printChildren();
-    void printChild(std::vector<std::vector<int>> board);
 
     // std::pair<float, std::vector<std::vector<int>>> doTheThing(std::vector<std::vector<int>> boardMatrix, int depth, float alpha, float beta, bool maximisingPlayer);
 
-    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int x, int y, int *noRecursions, time_t start_time, double time_limit);
+    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noRecursions, time_t start_time, double time_limit);
 
     std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
 
