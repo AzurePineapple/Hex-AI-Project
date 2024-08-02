@@ -432,6 +432,9 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 
 Game::~Game()
 {
+    delete one;
+    delete two;
+    delete 
 }
 
 void Game::swapActivePlayer()

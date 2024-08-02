@@ -11,8 +11,6 @@ using Eigen::MatrixXd;
 class ResistanceDistance
 {
 private:
-    std::vector<std::vector<int>> exampleBoard;
-
     // Adjacency Matrices for each player
     MatrixXd AdjMat;
     MatrixXd AdjMat_two;
@@ -49,9 +47,9 @@ public:
 
     float evaluate(const std::vector<std::vector<int>> &boardMatrix);
     int getOneDIndex(int i, int j);
-    void createAdjMatNew(std::vector<std::vector<int>> boardMatrix);
-    void createLaplacianNew();
-    float alternateResistanceDistance();
+    void createAdjMat(std::vector<std::vector<int>> boardMatrix);
+    void createLaplacian();
+    float ResistanceDistance();
     bool validateTile(std::pair<int, int> cell, int boardSize);
 
     // Redundant functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

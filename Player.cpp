@@ -4,7 +4,7 @@ Player::Player()
 {
 }
 
-void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, int mmTimeLimitParam = 3, int mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true)
+void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, double mmTimeLimitParam = 3, double mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true)
 {
     if (playerType == "human")
     {

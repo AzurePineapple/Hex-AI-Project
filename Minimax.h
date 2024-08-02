@@ -10,33 +10,30 @@
 class MiniMax
 {
 private:
-    std::vector<std::vector<std::vector<int>>> childStates;
-    std::vector<std::vector<int>> bestState;
-    std::vector<std::vector<int>> state;
-
-    std::vector<std::vector<std::vector<int>>> bestStatePath;
-
     ResistanceDistance *Evaluator = new ResistanceDistance();
 
     std::map<std::vector<std::vector<int>>, float> scoresMap;
+
+    // Redundant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    std::vector<std::vector<std::vector<int>>> childStates;
+    std::vector<std::vector<int>> bestState;
+    std::vector<std::vector<std::vector<int>>> bestStatePath;
 
 public:
     MiniMax();
     ~MiniMax();
 
-    void createChildren(std::vector<std::vector<int>> boardMatrix, int playerCode);
 
-    void printChildren();
 
-    // std::pair<float, std::vector<std::vector<int>>> doTheThing(std::vector<std::vector<int>> boardMatrix, int depth, float alpha, float beta, bool maximisingPlayer);
-
+    std::vector<std::pair<int, int>> generateMoves(const std::vector<std::vector<int>> &boardMatrix);
+    
     float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noRecursions, time_t start_time, double time_limit);
 
     std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
 
-    std::pair<int, int> go(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
-
-    std::vector<std::pair<int, int>> generateMoves(const std::vector<std::vector<int>> &boardMatrix);
-
     bool isTerminal(const std::vector<std::vector<int>> &boardMatrix);
+
+    // Redundant %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    void createChildren(std::vector<std::vector<int>> boardMatrix, int playerCode);
+    void printChildren();
 };

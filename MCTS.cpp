@@ -618,6 +618,8 @@ void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit)
     return; // Return nothing as root has been modified in place
 }
 
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 // Redundant
 // A breadth first search to determine if black has won the game - we only need this because if black hasn't won, white has.
 bool BlackWonBFS(std::vector<std::pair<int, int>> startPositions, std::vector<std::vector<int>> boardMatrix)
@@ -668,7 +670,6 @@ bool BlackWonBFS(std::vector<std::pair<int, int>> startPositions, std::vector<st
     // If queue is exhausted without finding a black win, then return false
     return false;
 }
-
 
 // Returns the classic UCT value of a node
 double getUCTValue(TreeNode *node, TreeNode *child)

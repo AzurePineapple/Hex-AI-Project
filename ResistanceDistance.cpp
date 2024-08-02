@@ -43,7 +43,7 @@ int ResistanceDistance::getOneDIndex(int i, int j)
     }
 }
 
-void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatrix)
+void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix)
 {
     int boardSize = boardMatrix.size();
 
@@ -348,7 +348,7 @@ void ResistanceDistance::createAdjMatNew(std::vector<std::vector<int>> boardMatr
     AdjMatInitialised = true;
 }
 
-void ResistanceDistance::createLaplacianNew()
+void ResistanceDistance::createLaplacian()
 {
     // Black's Laplacian
     LaplacianMatrix.resize(AdjMat.rows(), AdjMat.cols());
@@ -415,7 +415,7 @@ void ResistanceDistance::createLaplacianNew()
 }
 
 // Alternative method for calculating the resistance distance given in "A Simple Method for Computing Resistance Distance by Ravindra B. Bapat, Ivan Gutmana,b, and Wenjun Xiaob"
-float ResistanceDistance::alternateResistanceDistance()
+float ResistanceDistance::ResistanceDistance()
 {
     // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
     // Laplacian with the ith and jth columns/rows removed respectively
