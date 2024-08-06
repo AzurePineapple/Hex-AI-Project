@@ -8,6 +8,26 @@
 #include <ctime>
 #include "src/include/Eigen/Dense"
 
+// Function to print the progress bar
+void printProgressBar(int current, int total, int barWidth = 50)
+{
+    float progress = (float)current / total;
+    int pos = barWidth * progress;
+
+    std::cout << "[";
+    for (int i = 0; i < barWidth; ++i)
+    {
+        if (i < pos)
+            std::cout << "=";
+        else if (i == pos)
+            std::cout << ">";
+        else
+            std::cout << " ";
+    }
+    std::cout << "] " << int(progress * 100.0) << " %\r";
+    std::cout.flush();
+}
+
 void ParameterTuning()
 {
 
@@ -53,6 +73,9 @@ void ParameterTuning()
         Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
         delete testGame;
         swapFirstPlayer = swapFirstPlayer ? false : true;
+
+        // Update the progress bar
+        printProgressBar(i + 1, numMatches);
     }
     std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
 }
