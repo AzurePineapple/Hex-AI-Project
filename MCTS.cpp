@@ -246,10 +246,10 @@ double getResult(std::vector<std::vector<int>> boardMatrix)
 }
 
 // Returns the UCT-RAVE value of the node
-double getUCTRAVEValue(TreeNode *node, TreeNode *child)
+double getUCTRAVEValue(TreeNode *node, TreeNode *child, double explorationConstant, double RAVEBias)
 {
-    double C = 1.0; // exploration constant
-    double b = 0.5; // Parameter in beta parameter, empirically determined, using value from https://papersdb.cs.ualberta.ca/~papersdb/uploaded_files/1029/paper_thesis.pdf
+    double C = explorationConstant; // exploration constant
+    double b = RAVEBias;            // Parameter in beta parameter, empirically determined, using value from https://papersdb.cs.ualberta.ca/~papersdb/uploaded_files/1029/paper_thesis.pdf
 
     double childVisits = child->visits + 1e-8;
     double raveVisits = child->raveVisits + 1e-8;
@@ -262,7 +262,7 @@ double getUCTRAVEValue(TreeNode *node, TreeNode *child)
     return score;
 }
 
-TreeNode *selectChild(TreeNode *node)
+TreeNode *selectChild(TreeNode *node, double explorationConstant, double RAVEBias)
 {
     std::vector<TreeNode *> bestChildren; // Vector of best UCT scores
     double bestValue = -std::numeric_limits<double>::infinity();
@@ -270,7 +270,7 @@ TreeNode *selectChild(TreeNode *node)
     // Iterate through node's children and identify those with highest scores
     for (auto &child : node->children)
     {
-        double nodeScore = getUCTRAVEValue(node, child.get());
+        double nodeScore = getUCTRAVEValue(node, child.get(), explorationConstant, RAVEBias);
 
         if (nodeScore > bestValue)
         {
@@ -311,9 +311,35 @@ void expand(TreeNode *node, int playerCode)
     // Reserve space for child nodes using size of availableMoves
     node->children.reserve(availableMoves.size());
 
-    // Iterate through the available moves
-    for (auto &&move : availableMoves)
+    // Add selection for all children expansion vs one child, do not use, experiment with if I have time.
+    bool expandAllChildren = true;
+
+    if (expandAllChildren)
     {
+        // Iterate through the available moves
+        for (auto &&move : availableMoves)
+        {
+            // Break down each move in the vector of pairs because it'd get messy otherwise
+            std::vector<std::vector<int>> state = std::move(move.first); // Using move to prevent copying, for speed
+            int row = move.second.first;
+            int col = move.second.second;
+
+            // Create a new child, passing the new boardMatrix and the current node to the constructor
+            // TreeNode *child = new TreeNode(state, row, col, node);
+            auto child = std::make_unique<TreeNode>(std::move(state), row, col, node, playerCode);
+
+            // Add the new node as a child of the current node
+            node->children.push_back(std::move(child));
+        }
+    }
+    else
+    {
+        // Select a random child and create the node for it.
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, availableMoves.size() - 1);
+        auto &&move = availableMoves[dis(gen)];
+
         // Break down each move in the vector of pairs because it'd get messy otherwise
         std::vector<std::vector<int>> state = std::move(move.first); // Using move to prevent copying, for speed
         int row = move.second.first;
@@ -446,7 +472,7 @@ std::pair<std::vector<bool>, std::vector<std::vector<std::pair<int, int>>>> para
     return {blackWins, resultMoves};
 }
 
-std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised, bool maxVisitsChild)
+std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iterations, double timeLimit, bool isParallelised, bool maxVisitsChild, double explorationConstant, double RAVEBias)
 {
     auto startTime = std::chrono::steady_clock::now();
     int numberOfThreads = 1;
@@ -480,7 +506,7 @@ std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iteration
         // Selection
         while (!node->children.empty() && !isTerminal(node->boardMatrix))
         {
-            node = selectChild(node);
+            node = selectChild(node, explorationConstant, RAVEBias);
             if (node == nullptr)
             {
                 throw std::logic_error("Selected nullptr");
@@ -560,7 +586,7 @@ std::unique_ptr<TreeNode> MCTSleaf(TreeNode *root, int playerCode, int iteration
     return bestChild; // Return the best child node
 }
 
-void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit)
+void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit, double explorationConstant, double RAVEBias)
 {
     auto startTime = std::chrono::steady_clock::now();
 
@@ -580,7 +606,7 @@ void MCTSroot(TreeNode *root, int playerCode, int iterations, double timeLimit)
         // Selection
         while (!node->children.empty() && !isTerminal(node->boardMatrix))
         {
-            node = selectChild(node);
+            node = selectChild(node, explorationConstant, RAVEBias);
             if (node == nullptr)
             {
                 throw std::logic_error("Selected nullptr");

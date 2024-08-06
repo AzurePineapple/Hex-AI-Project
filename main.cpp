@@ -8,6 +8,55 @@
 #include <ctime>
 #include "src/include/Eigen/Dense"
 
+void ParameterTuning()
+{
+
+    playerSettings playerOne;
+    playerOne.experimentName = "C=0";
+    playerOne.playerType = "computer";
+    playerOne.playerCode = 1;
+    playerOne.AIType = "mcts";
+    playerOne.isParallelised = true;
+    playerOne.mmDepth = 2;
+    playerOne.mmTimeLimit = 5.0;
+    playerOne.mctsTimeLimit = 5.0;
+    playerOne.mctsIterLimit = 10000;
+    playerOne.rootParallelised = true;
+    playerOne.explorationConstant = 0;
+    playerOne.RAVEBias = 0.5;
+
+    playerSettings playerTwo;
+    playerTwo.experimentName = "C=1.0";
+    playerTwo.playerType = "computer";
+    playerTwo.playerCode = 2;
+    playerTwo.AIType = "mcts";
+    playerTwo.isParallelised = true;
+    playerTwo.mmDepth = 2;
+    playerTwo.mmTimeLimit = 5.0;
+    playerTwo.mctsTimeLimit = 5.0;
+    playerTwo.mctsIterLimit = 10000;
+    playerTwo.rootParallelised = true;
+    playerTwo.explorationConstant = 1.0;
+    playerTwo.RAVEBias = 0.5;
+
+    SDL_Handler *handler = new SDL_Handler();
+
+    // Set the size of the test board
+    int boardSize = 3;
+    // Set the number of test matches to do
+    int numMatches = 20;
+    // Bool to alternate which player goes first
+    bool swapFirstPlayer = false;
+
+    for (int i = 0; i < numMatches; i++)
+    {
+        Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+        delete testGame;
+        swapFirstPlayer = swapFirstPlayer ? false : true;
+    }
+    std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+}
+
 // Function to deslect all menu items in a given menu
 void UncheckAllMenuItems(HMENU hMenu, std::vector<int> itemIDs)
 {
@@ -281,81 +330,59 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
 
 int main(int argv, char **args)
 {
-    srand(static_cast<unsigned int>(time(0)));
 
-    // // For testing Evaluation function
-    // std::vector<std::vector<int>> boardMatrix;
-    // boardMatrix.resize(2, std::vector<int>(2, 0));
+    bool TestingMode = true;
 
-    // int boardSize = boardMatrix.size();
-    // // boardMatrix[1][1] = 1;
-    // ResistanceDistance *test = new ResistanceDistance();
-
-    // boardMatrix[0][1] = 1;
-    // boardMatrix[1][0] = 2;
-
-    // auto score = test->evaluate(boardMatrix);
-    // std::cout << score << std::endl;
-
-    // For testing MiniMax
-
-    // std::vector<std::vector<int>> board;
-    // board.resize(3, std::vector<int>(3, 0));
-    // // board[0][0] = 0;
-    // // board[0][1] = 0;
-    // // board[0][2] = 0;
-    // // board[1][0] = 0;
-    // // board[1][1] = 0;
-    // // board[1][2] = 0;
-    // // board[2][0] = 0;
-    // // board[2][1] = 0;
-    // // board[2][2] = 0;
-    // MiniMax *test = new MiniMax();
-    // test->go(board, true);
-
-    // For testing entire game loop
-
-    static MenuState options;
-
-    SDL_Handler *handler = new SDL_Handler();
-    handler->init();
-    handler->wipeScreen();
-    handler->showMainScreen();
-    // Tells SDL events to listen to windows api events
-    SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-
-    Game *game = nullptr;
-
-    SDL_SysWMinfo wmInfo;
-    SDL_VERSION(&wmInfo.version);
-    SDL_GetWindowWMInfo(handler->Window, &wmInfo);
-
-    HWND hwnd = wmInfo.info.win.window;
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(handler));
-
-    HMENU hMenu = CreateMainMenu(options);
-    SetMenu(hwnd, hMenu);
-
-    // Main message loop
-    MSG msg;
-    bool running = true;
-    bool clickDetected = false;
-    while (running)
+    if (TestingMode)
     {
-        // Check for SDL events
-        SDL_Event event;
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-            {
-                PostQuitMessage(0);
-                running = false;
-            }
+        ParameterTuning();
+    }
+    else
+    {
+        srand(static_cast<unsigned int>(time(0)));
 
-            if (event.type == SDL_SYSWMEVENT)
+        static MenuState options;
+
+        SDL_Handler *handler = new SDL_Handler();
+        handler->init();
+        handler->wipeScreen();
+        handler->showMainScreen();
+        // Tells SDL events to listen to windows api events
+        SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
+
+        Game *game = nullptr;
+
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION(&wmInfo.version);
+        SDL_GetWindowWMInfo(handler->Window, &wmInfo);
+
+        HWND hwnd = wmInfo.info.win.window;
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(handler));
+
+        HMENU hMenu = CreateMainMenu(options);
+        SetMenu(hwnd, hMenu);
+
+        // Main message loop
+        MSG msg;
+        bool running = true;
+        bool clickDetected = false;
+        while (running)
+        {
+            // Check for SDL events
+            SDL_Event event;
+            while (SDL_PollEvent(&event))
             {
-                auto wParam = event.syswm.msg->msg.win.wParam;
-                ProcessMenuSelection(hwnd, wParam, handler, options, game);
+                if (event.type == SDL_QUIT)
+                {
+                    PostQuitMessage(0);
+                    running = false;
+                }
+
+                if (event.type == SDL_SYSWMEVENT)
+                {
+                    auto wParam = event.syswm.msg->msg.win.wParam;
+                    ProcessMenuSelection(hwnd, wParam, handler, options, game);
+                }
             }
         }
     }

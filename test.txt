@@ -1,0 +1,35 @@
+Player 2 won.
+Board:
+--------
+\ 0 0 2 \
+ \ 1 2 1 \
+  \ 2 0 0 \
+   --------
+Player 1 settings:
+Experiment Name: C=2.0
+Player Type: computer
+Player Code: 1
+AI Type: mcts
+Board Size: 4096
+Is Parallelised: true
+Minimax Depth: 2
+Minimax Time Limit: 5
+MCTS Time Limit: 5
+MCTS Iteration Limit: 10000
+Root Parallelised: true
+Exploration Constant: 1
+RAVE Bias: 0.5
+Player 2 settings:
+Experiment Name: C=1.0
+Player Type: computer
+Player Code: 2
+AI Type: mcts
+Board Size: -1980601008
+Is Parallelised: true
+Minimax Depth: 2
+Minimax Time Limit: 5
+MCTS Time Limit: 5
+MCTS Iteration Limit: 10000
+Root Parallelised: true
+Exploration Constant: 1
+RAVE Bias: 0.5

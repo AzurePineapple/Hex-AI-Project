@@ -115,7 +115,7 @@ void Board::showBoard()
     std::cout << std::string(2 * boardSize + 2, '-') << std::endl;
 }
 
-bool Board::placePiece(std::string player, int i, int j)
+std::pair<bool, int> Board::placePiece(std::string player, int i, int j)
 {
     if (0 <= i && i < boardSize && 0 <= j && j < boardSize)
     {
@@ -138,17 +138,18 @@ bool Board::placePiece(std::string player, int i, int j)
                 connectToNeighbours(i, j, 2);
             }
 
-            bool gameOver = detectWinner();
-            return gameOver;
+            std::pair<bool, int> result = detectWinner();
+
+            return result;
         }
-        return false;
+        return {false, -1};
     }
     else
     {
         std::cout << "Passed coordinates are out of bounds, recieved: (" << i << ", " << j << ")" << std::endl;
     }
 
-    return false;
+    return {false, -1};
 }
 
 void Board::createNeighbours(int i, int j)
@@ -325,11 +326,11 @@ void Board::connectToNeighbours(int i, int j, int colourCode)
     }
 }
 
-bool Board::detectWinner()
+std::pair<bool, int> Board::detectWinner()
 {
     if (dsBlack.find(topNode) == dsBlack.find(bottomNode))
     {
-        std::cout << "Player 1 Wins!" << std::endl;
+        // std::cout << "Player 1 Wins!" << std::endl;
         std::vector<std::pair<int, int>> winningPath;
         for (auto &&i : indexMap)
         {
@@ -348,11 +349,11 @@ bool Board::detectWinner()
         //     }
         // }
 
-        return true;
+        return {true, 1};
     }
     else if (dsWhite.find(leftNode) == dsWhite.find(rightNode))
     {
-        std::cout << "Player 2 Wins!" << std::endl;
+        // std::cout << "Player 2 Wins!" << std::endl;
         std::vector<std::pair<int, int>> winningPath;
         for (auto &&i : indexMap)
         {
@@ -370,9 +371,9 @@ bool Board::detectWinner()
         //     }
         // }
 
-        return true;
+        return {true, 2};
     }
-    return false;
+    return {false, -1};
 }
 
 std::vector<std::vector<int>> Board::getBoardMatrix()

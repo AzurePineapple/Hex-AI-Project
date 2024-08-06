@@ -20,11 +20,11 @@ float ResistanceDistance::evaluate(const std::vector<std::vector<int>>& boardMat
         }
     }
 
-    createAdjMatNew(boardMatrix);
+    createAdjMat(boardMatrix);
 
-    createLaplacianNew();
+    createLaplacian();
 
-    return alternateResistanceDistance();
+    return getResistanceDistance();
 }
 
 // Returns the 1D index of a search pair
@@ -415,7 +415,7 @@ void ResistanceDistance::createLaplacian()
 }
 
 // Alternative method for calculating the resistance distance given in "A Simple Method for Computing Resistance Distance by Ravindra B. Bapat, Ivan Gutmana,b, and Wenjun Xiaob"
-float ResistanceDistance::ResistanceDistance()
+float ResistanceDistance::getResistanceDistance()
 {
     // To use the formula from the literature we need L_i and L_ij, which is the Laplacian with the ith columns/rows and the
     // Laplacian with the ith and jth columns/rows removed respectively

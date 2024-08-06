@@ -72,7 +72,8 @@
         "dense": "cpp",
         "qr": "cpp",
         "forward_list": "cpp",
-        "ranges": "cpp"
+        "ranges": "cpp",
+        "codecvt": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "enabled"
 }

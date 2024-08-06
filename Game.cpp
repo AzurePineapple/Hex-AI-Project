@@ -1,5 +1,6 @@
 #include "Game.h"
 
+// Default Constructor
 Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 {
     // Process incoming game options
@@ -157,7 +158,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             // Determine if cursor is within Hex's bounding box
                             if (gameBoard->getTileObj(i, j)->BBcoords[0] < x && x < gameBoard->getTileObj(i, j)->BBcoords[2] && gameBoard->getTileObj(i, j)->BBcoords[1] < y && y < gameBoard->getTileObj(i, j)->BBcoords[3] && gameBoard->getTileObj(i, j)->getContents() == "empty")
                             {
-                                gameOver = gameBoard->placePiece(activePlayer->getColour(), i, j);
+                                std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), i, j);
+                                gameOver = result.first;
                                 gameBoard->drawBoard(handler->Renderer, handler->SCREEN_WIDTH);
                                 turnCounter += 1;
                                 swapActivePlayer();
@@ -178,7 +180,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         gameBoard->boardSwap();
                         // gameBoard->showBoard();
                         gameBoard->drawBoard(handler->Renderer, handler->SCREEN_WIDTH);
-                        std::cout << "Swap performed" << std::endl;
+                        // std::cout << "Swap performed" << std::endl;
                         turnCounter += 1;
                         swapActivePlayer();
                     }
@@ -197,7 +199,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize2.find(previousMove) != movesToSwapSize2.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -205,7 +207,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -216,7 +219,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize3.find(previousMove) != movesToSwapSize3.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -224,7 +227,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -235,7 +239,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize4.find(previousMove) != movesToSwapSize4.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -243,7 +247,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -254,7 +259,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize5.find(previousMove) != movesToSwapSize5.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -262,7 +267,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -273,7 +279,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize6.find(previousMove) != movesToSwapSize6.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -281,7 +287,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -292,7 +299,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize7.find(previousMove) != movesToSwapSize7.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -300,7 +307,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -311,7 +319,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize8.find(previousMove) != movesToSwapSize8.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -319,7 +327,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -330,7 +339,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize9.find(previousMove) != movesToSwapSize9.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -338,7 +347,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -349,7 +359,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize10.find(previousMove) != movesToSwapSize10.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         // If no swap, play as normal
                         else
@@ -357,7 +367,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -368,14 +379,15 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                         if (movesToSwapSize11.find(previousMove) != movesToSwapSize11.end())
                         {
                             gameBoard->boardSwap();
-                            std::cout << "Swap performed" << std::endl;
+                            // std::cout << "Swap performed" << std::endl;
                         }
                         else
                         {
                             int x, y;
                             activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                            gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                            gameOver = result.first;
                             // UPdate the previous move after move is performed
                             previousMove.first = x;
                             previousMove.second = y;
@@ -396,7 +408,8 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
                     int x, y;
                     activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
 
-                    gameOver = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
                     gameBoard->drawBoard(handler->Renderer, handler->SCREEN_WIDTH);
 
                     turnCounter += 1;
@@ -432,9 +445,338 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 
 Game::~Game()
 {
-    delete one;
-    delete two;
-    delete 
+}
+
+// Overloaded constructor for testing
+Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SDL_Handler *handler, bool swapFirstPlayer)
+{
+    one.createPlayer(playerOne.playerType, playerOne.playerCode, playerOne.AIType, boardSize, playerOne.isParallelised, playerOne.mmDepth, playerOne.mmTimeLimit, playerOne.mctsTimeLimit, playerOne.mctsIterLimit, playerOne.rootParallelised, playerOne.explorationConstant, playerOne.RAVEBias);
+
+    two.createPlayer(playerTwo.playerType, playerTwo.playerCode, playerTwo.AIType, boardSize, playerTwo.isParallelised, playerTwo.mmDepth, playerTwo.mmTimeLimit, playerTwo.mctsTimeLimit, playerTwo.mctsIterLimit, playerTwo.rootParallelised, playerTwo.explorationConstant, playerTwo.RAVEBias);
+
+    Board *gameBoard = new Board(boardSize, 1);
+
+    players.first = &one;
+    players.second = &two;
+
+    int playedFirst = -1;
+    // Alternate between which player goes first
+    if (swapFirstPlayer)
+    {
+        activePlayer = players.second;
+        playedFirst = 2;
+    }
+    else
+    {
+        activePlayer = players.first;
+        playedFirst = 1;
+    }
+
+    gameBoard->createBoard(handler->SCREEN_WIDTH);
+
+    bool quit = false;
+    bool gameOver = false;
+    int winner = -1;
+    bool swapEnabled = false;
+    int turnCounter = 0;
+
+    while (!quit)
+    {
+        // check the previousMove is being updated correctly
+        if (turnCounter != 0 && previousMove.first == -1 && previousMove.second == -1)
+        {
+            throw std::logic_error("Previous move logic has fucked up");
+        }
+
+        // Swap rule implementation
+        if (turnCounter == 1)
+        {
+            switch (boardSize)
+            {
+            case 2:
+                // Check if leading move should be swapped
+                if (movesToSwapSize2.find(previousMove) != movesToSwapSize2.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 3:
+                // Check if leading move should be swapped
+                if (movesToSwapSize3.find(previousMove) != movesToSwapSize3.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 4:
+                // Check if leading move should be swapped
+                if (movesToSwapSize4.find(previousMove) != movesToSwapSize4.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 5:
+                // Check if leading move should be swapped
+                if (movesToSwapSize5.find(previousMove) != movesToSwapSize5.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 6:
+                // Check if leading move should be swapped
+                if (movesToSwapSize6.find(previousMove) != movesToSwapSize6.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 7:
+                // Check if leading move should be swapped
+                if (movesToSwapSize7.find(previousMove) != movesToSwapSize7.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 8:
+                // Check if leading move should be swapped
+                if (movesToSwapSize8.find(previousMove) != movesToSwapSize8.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 9:
+                // Check if leading move should be swapped
+                if (movesToSwapSize9.find(previousMove) != movesToSwapSize9.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+            case 10:
+                // Check if leading move should be swapped
+                if (movesToSwapSize10.find(previousMove) != movesToSwapSize10.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                // If no swap, play as normal
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+
+            case 11:
+                if (movesToSwapSize11.find(previousMove) != movesToSwapSize11.end())
+                {
+                    gameBoard->boardSwap();
+                    // std::cout << "Swap performed" << std::endl;
+                }
+                else
+                {
+                    int x, y;
+                    activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    winner = result.second;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+                }
+                break;
+
+            default:
+                std::cout << "Invalid board size for swap, cannot perform swap" << std::endl;
+                break;
+            }
+
+            turnCounter += 1;
+            swapActivePlayer();
+        }
+        else
+        {
+            int x, y;
+            activePlayer->playMoveAI(gameBoard->getEmptyTiles(), gameBoard->getSize(), &x, &y, gameBoard->getBoardMatrix());
+
+            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+            gameOver = result.first;
+            winner = result.second;
+
+            turnCounter += 1;
+            swapActivePlayer();
+
+            // UPdate the previous move after move is performed
+            previousMove.first = x;
+            previousMove.second = y;
+        }
+
+        // Close the window if the game is over
+        if (gameOver)
+        {
+
+            if (winner == -1)
+            {
+                std::cout << "MEGA YIKES" << std::endl;
+            }
+
+            std::ofstream outputFile;
+            bool fileExists = false;
+            // Check if directory exists, create if not
+            if (!std::filesystem::exists("parameterTuning"))
+            {
+                std::filesystem::create_directories("parameterTuning");
+            }
+
+            std::string filename = "parameterTuning/" + playerOne.experimentName + "_VS_" + playerTwo.experimentName + ".csv";
+
+            // Check if the file already exists
+            std::ifstream infile(filename);
+            if (infile.good())
+            {
+                fileExists = true;
+            }
+
+            // Open file in append mode
+            outputFile.open(filename, std::ios::app);
+
+            // If file does not exist, write player settings at top
+
+            if (!fileExists)
+            {
+                outputFile << "Player 1 settings:" << std::endl;
+                outputFile << playerOne << std::endl;
+                outputFile << "Player 2 settings:" << std::endl;
+                outputFile << playerTwo << std::endl;
+                outputFile << "Played first, Winner" << std::endl;
+            }
+
+            // Write the winner row
+            outputFile << playedFirst << ", " << winner << std::endl;
+
+            outputFile.close();
+
+            quit = true;
+            break;
+        }
+    }
 }
 
 void Game::swapActivePlayer()

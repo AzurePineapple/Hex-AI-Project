@@ -5,7 +5,11 @@
 #include <vector>
 #include <set>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
 #include <windows.h>
+#include "playerSettings.h"
 
 class Game
 {
@@ -338,8 +342,12 @@ private:
     };
 
 public:
+    // Default Constructor
     Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd);
     ~Game();
+
+    // Create overloaded constructor for automated testing
+    Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SDL_Handler *handler, bool swapFirstPlayer);
 
     // Swap the players after they take their turns
     void swapActivePlayer();

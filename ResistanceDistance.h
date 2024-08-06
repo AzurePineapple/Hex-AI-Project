@@ -49,7 +49,7 @@ public:
     int getOneDIndex(int i, int j);
     void createAdjMat(std::vector<std::vector<int>> boardMatrix);
     void createLaplacian();
-    float ResistanceDistance();
+    float getResistanceDistance();
     bool validateTile(std::pair<int, int> cell, int boardSize);
 
     // Redundant functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

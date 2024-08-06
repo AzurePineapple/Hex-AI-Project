@@ -4,7 +4,7 @@ Player::Player()
 {
 }
 
-void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, double mmTimeLimitParam = 3, double mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true)
+void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, double mmTimeLimitParam = 3, double mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true, double explorationConstantParam = 1.0, double RAVEBiasParam = 0.5)
 {
     if (playerType == "human")
     {
@@ -21,6 +21,8 @@ void Player::createPlayer(std::string playerType, int colourCode, std::string AI
         mctsTimeLimit = mctsTimeLimitParam;
         mctsIterLimit = mctsIterLimitParam;
         rootParallelised = rootParallelisedParam;
+        explorationConstant = explorationConstantParam;
+        RAVEBias = RAVEBiasParam;
 
         if (AIModel == "minimax")
         {
@@ -163,7 +165,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
 
             for (int i = 0; i < num_threads; i++)
             {
-                threads.emplace_back(mctsThread, root->boardMatrix, root->row, root->col, root->parent, root->playerOwner, playerColourCode, mctsIterLimit, mctsTimeLimit);
+                threads.emplace_back(mctsThread, root->boardMatrix, root->row, root->col, root->parent, root->playerOwner, playerColourCode, mctsIterLimit, mctsTimeLimit, explorationConstant, RAVEBias);
             }
 
             // Join Threads
@@ -202,7 +204,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
                 }
             }
 
-            std::cout << "(Root) Best child had " << maxValue << " visits" << std::endl;
+            // std::cout << "(Root) Best child had " << maxValue << " visits" << std::endl;
 
             // Play the move by setting pointer values
             *x = maxKey.first;
@@ -215,9 +217,9 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             // Leaf Parallelisation method
 
             // Second, get the best child of the new board position
-            std::unique_ptr<TreeNode> bestChild = MCTSleaf(root.get(), playerColourCode, mctsIterLimit, mctsTimeLimit, isParallelised, true);
+            std::unique_ptr<TreeNode> bestChild = MCTSleaf(root.get(), playerColourCode, mctsIterLimit, mctsTimeLimit, isParallelised, true, explorationConstant, RAVEBias);
 
-            std::cout << "(Leaf) Best child had " << bestChild->visits << " visits" << std::endl;
+            // std::cout << "(Leaf) Best child had " << bestChild->visits << " visits" << std::endl;
 
             // Third, play the move by setting pointer values
             *x = bestChild->row;
@@ -273,7 +275,7 @@ Player::~Player()
 }
 
 // Thread function
-void mctsThread(std::vector<std::vector<int>> boardMatrix, int row, int col, TreeNode *parent, int playerOwner, int playerColourCode, int mctsIterLimit, double mctsTimeLimit)
+void mctsThread(std::vector<std::vector<int>> boardMatrix, int row, int col, TreeNode *parent, int playerOwner, int playerColourCode, int mctsIterLimit, double mctsTimeLimit, double explorationConstant, double RAVEBias)
 {
     // Create a local copy of the root so as to not fuck up the tree during parallel processing
     // Cannot preserve child data from previous runs because of unique pointer limitations.
@@ -281,7 +283,7 @@ void mctsThread(std::vector<std::vector<int>> boardMatrix, int row, int col, Tre
 
     // Perform the mcts search
     // Modifies localRoot in place so no need to return anything
-    MCTSroot(localRoot, playerColourCode, mctsIterLimit, mctsTimeLimit);
+    MCTSroot(localRoot, playerColourCode, mctsIterLimit, mctsTimeLimit, explorationConstant, RAVEBias);
     for (auto &&child : localRoot->children)
     {
         std::vector<int> values = {child->row,

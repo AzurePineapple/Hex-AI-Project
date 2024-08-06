@@ -17,7 +17,6 @@ private:
 
     // Matrix for storing board data
     std::vector<std::vector<int>> boardMatrix;
-    
 
     // Matrix for storing Hexagon objects
     std::vector<Hexagon> tiles;
@@ -79,11 +78,10 @@ public:
     int getSize();
 
     // Placing piece on the board
-    bool placePiece(std::string player, int i, int j);
+    std::pair<bool, int> placePiece(std::string player, int i, int j);
 
     // Populates neighbours vector with correct pairs
     void createNeighbours(int i, int j);
-    
 
     // Return value of cell
     int getContents(int i, int j);
@@ -107,12 +105,12 @@ public:
     // Connects placed tiles to its neighbours
     void connectToNeighbours(int i, int j, int colourCode);
 
-    bool detectWinner();
+    std::pair<bool, int> detectWinner();
 
     std::vector<std::vector<int>> getBoardMatrix();
 
     std::vector<std::pair<int, int>> getEmptyTiles();
 
     // Swap rule function
-    void boardSwap(); 
+    void boardSwap();
 };
