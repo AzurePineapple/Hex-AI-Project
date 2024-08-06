@@ -6,18 +6,18 @@
 
 struct playerSettings
 {
-    std::string experimentName;
-    std::string playerType;
-    int playerCode;
-    std::string AIType;
-    bool isParallelised;
-    int mmDepth;
-    double mmTimeLimit;
-    double mctsTimeLimit;
-    int mctsIterLimit;
-    bool rootParallelised;
-    double explorationConstant;
-    double RAVEBias;
+    std::string experimentName = "Default";
+    std::string playerType = "computer";
+    int playerCode = 1;
+    std::string AIType = "mcts";
+    bool isParallelised = true;
+    int mmDepth = 3;
+    double mmTimeLimit = 10.0;
+    double mctsTimeLimit = 10.0;
+    int mctsIterLimit = 10000;
+    bool rootParallelised = true;
+    double explorationConstant = 0.3; // Default from https://cgi.cse.unsw.edu.au/~abdallahs/Papers/2010/Monte-Carlo%20Hex.pdf section 3
+    double RAVEBias = 0.001;          // Default from https://cgi.cse.unsw.edu.au/~abdallahs/Papers/2010/Monte-Carlo%20Hex.pdf section 3
 
     // Declare the friend function so that I can overload the << operator
     friend std::ostream &operator<<(std::ostream &os, const playerSettings &settings);

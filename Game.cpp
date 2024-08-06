@@ -17,7 +17,7 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
 
     processOptions(options, size, boardColour, playerOneType, playerTwoType, minimaxDepth, mmTimeLimit, mctsTimeLimit, mctsIterLimit, rootParallelised);
 
-    assert(size > 0);
+    assert(size > 0 && size < 12);
 
     Board *gameBoard = new Board(size, boardColour);
 
@@ -189,8 +189,46 @@ Game::Game(MenuState options, SDL_Handler *handler, HMENU hMenu, HWND hwnd)
             else
             {
                 handler->displayLoading();
+
+                // For the opening move, select from predetermined "fair" moves
+                if (turnCounter == 0)
+                {
+
+                    std::set<std::pair<int, int>> fairMoves = {
+                        {0, size - 1},
+                        {1, 2},
+                        {1, size - 3},
+                        {2, 0},
+                        {size - 3, size - 1},
+                        {size - 2, 2},
+                        {size - 2, size - 3},
+                        {size - 1, 0}};
+
+                    std::random_device rd;
+                    std::mt19937 gen(rd());
+                    std::uniform_int_distribution<> dis(0, fairMoves.size() - 1);
+                    int randomIndex = dis(gen);
+
+                    auto it = fairMoves.begin();
+                    std::advance(it, randomIndex);
+
+                    auto openingMove = *it;
+
+                    int x = openingMove.first;
+                    int y = openingMove.second;
+
+                    std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+                    gameOver = result.first;
+                    // UPdate the previous move after move is performed
+                    previousMove.first = x;
+                    previousMove.second = y;
+
+                    gameBoard->drawBoard(handler->Renderer, handler->SCREEN_WIDTH);
+                    turnCounter += 1;
+                    swapActivePlayer();
+                }
                 // Swap rule implementation
-                if (turnCounter == 1)
+                else if (turnCounter == 1)
                 {
                     switch (size)
                     {
@@ -477,7 +515,7 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
     bool quit = false;
     bool gameOver = false;
     int winner = -1;
-    bool swapEnabled = false;
+    bool swapPerformed = false;
     int turnCounter = 0;
 
     while (!quit)
@@ -488,8 +526,45 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
             throw std::logic_error("Previous move logic has fucked up");
         }
 
+        // For the opening move, select from predetermined "fair" moves
+        if (turnCounter == 0)
+        {
+            // Create a set of fair moves. Derived from Seymour's book.
+            std::set<std::pair<int, int>> fairMoves = {
+                {0, boardSize - 1},
+                {1, 2},
+                {1, boardSize - 3},
+                {2, 0},
+                {boardSize - 3, boardSize - 1},
+                {boardSize - 2, 2},
+                {boardSize - 2, boardSize - 3},
+                {boardSize - 1, 0}};
+
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<> dis(0, fairMoves.size() - 1);
+            int randomIndex = dis(gen);
+
+            auto it = fairMoves.begin();
+            std::advance(it, randomIndex);
+
+            auto openingMove = *it;
+
+            int x = openingMove.first;
+            int y = openingMove.second;
+
+            std::pair<bool, int> result = gameBoard->placePiece(activePlayer->getColour(), x, y);
+            gameOver = result.first;
+            winner = result.second;
+            // UPdate the previous move after move is performed
+            previousMove.first = x;
+            previousMove.second = y;
+
+            turnCounter += 1;
+            swapActivePlayer();
+        }
         // Swap rule implementation
-        if (turnCounter == 1)
+        else if (turnCounter == 1)
         {
             switch (boardSize)
             {
@@ -645,6 +720,7 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
                 if (movesToSwapSize9.find(previousMove) != movesToSwapSize9.end())
                 {
                     gameBoard->boardSwap();
+                    swapPerformed = true;
                     // std::cout << "Swap performed" << std::endl;
                 }
                 // If no swap, play as normal
@@ -666,6 +742,7 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
                 if (movesToSwapSize10.find(previousMove) != movesToSwapSize10.end())
                 {
                     gameBoard->boardSwap();
+                    swapPerformed = true;
                     // std::cout << "Swap performed" << std::endl;
                 }
                 // If no swap, play as normal
@@ -687,6 +764,7 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
                 if (movesToSwapSize11.find(previousMove) != movesToSwapSize11.end())
                 {
                     gameBoard->boardSwap();
+                    swapPerformed = true;
                     // std::cout << "Swap performed" << std::endl;
                 }
                 else
@@ -765,11 +843,12 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
                 outputFile << playerOne << std::endl;
                 outputFile << "Player 2 settings:" << std::endl;
                 outputFile << playerTwo << std::endl;
-                outputFile << "Played first, Winner" << std::endl;
+                outputFile << "Played first, Swapped, Winner" << std::endl;
             }
 
             // Write the winner row
-            outputFile << playedFirst << ", " << winner << std::endl;
+            std::string swapPerformedString = swapPerformed ? "true" : "false";
+            outputFile << playedFirst << ", " << swapPerformedString << ", " << winner << std::endl;
 
             outputFile.close();
 

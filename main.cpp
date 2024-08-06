@@ -30,54 +30,43 @@ void printProgressBar(int current, int total, int barWidth = 50)
 
 void ParameterTuning()
 {
-
-    playerSettings playerOne;
-    playerOne.experimentName = "C=0";
-    playerOne.playerType = "computer";
-    playerOne.playerCode = 1;
-    playerOne.AIType = "mcts";
-    playerOne.isParallelised = true;
-    playerOne.mmDepth = 2;
-    playerOne.mmTimeLimit = 5.0;
-    playerOne.mctsTimeLimit = 5.0;
-    playerOne.mctsIterLimit = 10000;
-    playerOne.rootParallelised = true;
-    playerOne.explorationConstant = 0;
-    playerOne.RAVEBias = 0.5;
-
-    playerSettings playerTwo;
-    playerTwo.experimentName = "C=1.0";
-    playerTwo.playerType = "computer";
-    playerTwo.playerCode = 2;
-    playerTwo.AIType = "mcts";
-    playerTwo.isParallelised = true;
-    playerTwo.mmDepth = 2;
-    playerTwo.mmTimeLimit = 5.0;
-    playerTwo.mctsTimeLimit = 5.0;
-    playerTwo.mctsIterLimit = 10000;
-    playerTwo.rootParallelised = true;
-    playerTwo.explorationConstant = 1.0;
-    playerTwo.RAVEBias = 0.5;
-
     SDL_Handler *handler = new SDL_Handler();
-
     // Set the size of the test board
-    int boardSize = 3;
+    const int boardSize = 9;
     // Set the number of test matches to do
-    int numMatches = 20;
+    int numMatches = 30;
     // Bool to alternate which player goes first
-    bool swapFirstPlayer = false;
 
-    for (int i = 0; i < numMatches; i++)
+    std::vector<double> explorationConstants = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+    std::vector<double> raveBiases = {0.0005, 0.00025, 0.000125};
+
+    for (double C : explorationConstants)
     {
-        Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
-        delete testGame;
-        swapFirstPlayer = swapFirstPlayer ? false : true;
+        for (double b : raveBiases)
+        {
+            playerSettings playerOne;
+            playerOne.experimentName = "C=" + std::to_string(C) + "_b=" + std::to_string(b);
+            playerOne.explorationConstant = C;
+            playerOne.RAVEBias = b;
 
-        // Update the progress bar
-        printProgressBar(i + 1, numMatches);
+
+            // Default control player, using default values. Default value details are in playerSettings.h
+            playerSettings playerTwo;
+            playerTwo.playerCode = 2;
+
+            bool swapFirstPlayer = false;
+            for (int i = 0; i < numMatches; i++)
+            {
+                Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+                delete testGame;
+                swapFirstPlayer = swapFirstPlayer ? false : true;
+
+                // Update the progress bar
+                printProgressBar(i + 1, numMatches);
+            }
+            std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+        }
     }
-    std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
 }
 
 // Function to deslect all menu items in a given menu
