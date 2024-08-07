@@ -10,7 +10,7 @@ ResistanceDistance::~ResistanceDistance()
 {
 }
 
-float ResistanceDistance::evaluate(const std::vector<std::vector<int>>& boardMatrix)
+float ResistanceDistance::evaluate(const std::vector<std::vector<int>>& boardMatrix, double bridgeWeight)
 {
     for (size_t i = 0; i < boardMatrix.size(); i++)
     {
@@ -20,7 +20,7 @@ float ResistanceDistance::evaluate(const std::vector<std::vector<int>>& boardMat
         }
     }
 
-    createAdjMat(boardMatrix);
+    createAdjMat(boardMatrix, bridgeWeight);
 
     createLaplacian();
 
@@ -43,7 +43,7 @@ int ResistanceDistance::getOneDIndex(int i, int j)
     }
 }
 
-void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix)
+void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix, double bridgeWeight)
 {
     int boardSize = boardMatrix.size();
 
@@ -144,8 +144,8 @@ void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix)
                         if (boardMatrix[i][j] == 1 && boardMatrix[bridge.first][bridge.second] == 1)
                         {
                             // Value set higher than 2 (resistance between two adjacent pieces), but lower than 3 (resistance between a friendly piece and an empty cell). This makes a two bridge still a good connection, but not as good as an immediate neighbour, as they can still be broken
-                            AdjMat(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2.5;
-                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2.5;
+                            AdjMat(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = bridgeWeight;
+                            AdjMat(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = bridgeWeight;
                         }
                     }
                 }
@@ -293,8 +293,8 @@ void ResistanceDistance::createAdjMat(std::vector<std::vector<int>> boardMatrix)
                         if (boardMatrix[i][j] == 2 && boardMatrix[bridge.first][bridge.second] == 2)
                         {
                             // Value set higher than 2 (resistance between two adjacent pieces), but lower than 3 (resistance between a friendly piece and an empty cell). This makes a two bridge still a good connection, but not as good as an immediate neighbour, as they can still be broken
-                            AdjMat_two(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = 2.5;
-                            AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = 2.5;
+                            AdjMat_two(getOneDIndex(bridge.first, bridge.second) + 1, getOneDIndex(i, j) + 1) = bridgeWeight;
+                            AdjMat_two(getOneDIndex(i, j) + 1, getOneDIndex(bridge.first, bridge.second) + 1) = bridgeWeight;
                         }
                     }
                 }

@@ -45,9 +45,9 @@ public:
     ResistanceDistance(/* args */);
     ~ResistanceDistance();
 
-    float evaluate(const std::vector<std::vector<int>> &boardMatrix);
+    float evaluate(const std::vector<std::vector<int>> &boardMatrix, double bridgeWeight);
     int getOneDIndex(int i, int j);
-    void createAdjMat(std::vector<std::vector<int>> boardMatrix);
+    void createAdjMat(std::vector<std::vector<int>> boardMatrix, double bridgeWeight);
     void createLaplacian();
     float getResistanceDistance();
     bool validateTile(std::pair<int, int> cell, int boardSize);

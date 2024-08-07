@@ -32,7 +32,7 @@ std::vector<std::pair<int, int>> MiniMax::generateMoves(const std::vector<std::v
     return availableMoves;
 }
 
-float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noEvaluations, time_t start_time, double time_limit)
+float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noEvaluations, time_t start_time, double time_limit, double bridgeWeight)
 {
     bool timeExceeded = difftime(time(NULL), start_time) >= time_limit;
     if (depth == 0 || isTerminal(boardMatrix) || timeExceeded)
@@ -47,7 +47,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
         }
         else
         {
-            float score = Evaluator->evaluate(boardMatrix);
+            float score = Evaluator->evaluate(boardMatrix, bridgeWeight);
             scoresMap[boardMatrix] = score;
             return score;
         }
@@ -66,7 +66,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
             boardMatrix[move.first][move.second] = 1;
 
             // Recursively evaluate board state in new state
-            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit);
+            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit, bridgeWeight);
 
             minEval = std::min(minEval, eval);
             beta = std::min(beta, minEval);
@@ -96,7 +96,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
             boardMatrix[move.first][move.second] = 2;
 
             // Recursively evaluate board state in new state
-            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit);
+            float eval = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, noEvaluations, start_time, time_limit, bridgeWeight);
 
             maxEval = std::max(maxEval, eval);
             alpha = std::max(alpha, maxEval);
@@ -116,7 +116,7 @@ float MiniMax::recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bo
 }
 
 // Makes an initial call to recurse, and uses the result to produce the i,j of the best move
-std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit)
+std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit, double bridgeWeight)
 {
     float alpha = -std::numeric_limits<float>::infinity();
     float beta = std::numeric_limits<float>::infinity();
@@ -138,7 +138,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
             boardMatrix[move.first][move.second] = 1;
             int noEvaluations = 0;
             // Get the evaluation function of the move
-            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit);
+            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit, bridgeWeight);
             // std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
             // std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move
@@ -170,7 +170,7 @@ std::pair<int, int> MiniMax::findBestMove(std::vector<std::vector<int>> boardMat
 
             int noEvaluations = 0;
             // Get the evaluation function of the move
-            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit);
+            float moveVal = recurse(boardMatrix, depth - 1, !blacksTurn, alpha, beta, &noEvaluations, start_time, time_limit, bridgeWeight);
             // std::cout << "Finished evaluating: " << move.first << ", " << move.second << std::endl;
             // std::cout << "Performed " << noEvaluations << " evaluations" << std::endl;
             // undo the move

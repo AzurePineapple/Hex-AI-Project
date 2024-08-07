@@ -27,9 +27,9 @@ public:
 
     std::vector<std::pair<int, int>> generateMoves(const std::vector<std::vector<int>> &boardMatrix);
     
-    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noRecursions, time_t start_time, double time_limit);
+    float recurse(std::vector<std::vector<int>> &boardMatrix, int depth, bool blacksTurn, float alpha, float beta, int *noRecursions, time_t start_time, double time_limit, double bridgeWeight);
 
-    std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit);
+    std::pair<int, int> findBestMove(std::vector<std::vector<int>> boardMatrix, bool blacksTurn, int depth, double time_limit, double bridgeWeight);
 
     bool isTerminal(const std::vector<std::vector<int>> &boardMatrix);
 

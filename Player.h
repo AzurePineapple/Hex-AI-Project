@@ -21,11 +21,12 @@ private:
     bool rootParallelised;
     double explorationConstant;
     double RAVEBias;
+    double bridgeWeight;
     std::vector<int> noSimulationsPerTurn;
 
 public:
     Player();
-    void createPlayer(std::string playerType, int colourCode, std::string AIType, int size, bool isParallelisedParam, int searchDepthParam, double mmTimeLimitParam, double mctsTimeLimitParam, int mctsIterLimitParam, bool rootParallelisedParam, double explorationConstantParam, double RAVEBiasParam);
+    void createPlayer(std::string playerType, int colourCode, std::string AIType, int size, bool isParallelisedParam, int searchDepthParam, double mmTimeLimitParam, double mctsTimeLimitParam, int mctsIterLimitParam, bool rootParallelisedParam, double explorationConstantParam, double RAVEBiasParam, double bridgeWeightParam);
     int *playMove(int x, int y);
 
     void playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boardSize, int *x, int *y, std::vector<std::vector<int>> boardMatrix);

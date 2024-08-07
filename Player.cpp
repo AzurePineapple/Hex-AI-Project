@@ -4,7 +4,7 @@ Player::Player()
 {
 }
 
-void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, double mmTimeLimitParam = 3, double mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true, double explorationConstantParam = 1.0, double RAVEBiasParam = 0.5)
+void Player::createPlayer(std::string playerType, int colourCode, std::string AIType = "none", int size = -1, bool isParallelisedParam = false, int searchDepthParam = 3, double mmTimeLimitParam = 3, double mctsTimeLimitParam = 10, int mctsIterLimitParam = 10000, bool rootParallelisedParam = true, double explorationConstantParam = 1.0, double RAVEBiasParam = 0.5, double bridgeWeightParam = 2.5)
 {
     if (playerType == "human")
     {
@@ -23,6 +23,7 @@ void Player::createPlayer(std::string playerType, int colourCode, std::string AI
         rootParallelised = rootParallelisedParam;
         explorationConstant = explorationConstantParam;
         RAVEBias = RAVEBiasParam;
+        bridgeWeight = bridgeWeightParam;
 
         if (AIModel == "minimax")
         {
@@ -119,7 +120,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             blacksTurn = false;
         }
 
-        auto minimax_pair = minimaxEngine.findBestMove(boardMatrix, blacksTurn, minimaxSearchDepth, mmTimeLimit);
+        auto minimax_pair = minimaxEngine.findBestMove(boardMatrix, blacksTurn, minimaxSearchDepth, mmTimeLimit, bridgeWeight);
         *x = minimax_pair.first;
         *y = minimax_pair.second;
     }

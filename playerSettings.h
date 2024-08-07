@@ -18,6 +18,7 @@ struct playerSettings
     bool rootParallelised = true;
     double explorationConstant = 0.3; // Default from https://cgi.cse.unsw.edu.au/~abdallahs/Papers/2010/Monte-Carlo%20Hex.pdf section 3
     double RAVEBias = 0.001;          // Default from https://cgi.cse.unsw.edu.au/~abdallahs/Papers/2010/Monte-Carlo%20Hex.pdf section 3
+    double bridgeWeight = 0;          // Sets the bridge weight for resistance distance calculation. 0 means bridges are not connected. MUST be between 2.0 and 3.0, non inclusive.
 
     // Declare the friend function so that I can overload the << operator
     friend std::ostream &operator<<(std::ostream &os, const playerSettings &settings);

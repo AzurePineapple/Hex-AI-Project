@@ -488,9 +488,9 @@ Game::~Game()
 // Overloaded constructor for testing
 Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SDL_Handler *handler, bool swapFirstPlayer)
 {
-    one.createPlayer(playerOne.playerType, playerOne.playerCode, playerOne.AIType, boardSize, playerOne.isParallelised, playerOne.mmDepth, playerOne.mmTimeLimit, playerOne.mctsTimeLimit, playerOne.mctsIterLimit, playerOne.rootParallelised, playerOne.explorationConstant, playerOne.RAVEBias);
+    one.createPlayer(playerOne.playerType, playerOne.playerCode, playerOne.AIType, boardSize, playerOne.isParallelised, playerOne.mmDepth, playerOne.mmTimeLimit, playerOne.mctsTimeLimit, playerOne.mctsIterLimit, playerOne.rootParallelised, playerOne.explorationConstant, playerOne.RAVEBias, playerOne.bridgeWeight);
 
-    two.createPlayer(playerTwo.playerType, playerTwo.playerCode, playerTwo.AIType, boardSize, playerTwo.isParallelised, playerTwo.mmDepth, playerTwo.mmTimeLimit, playerTwo.mctsTimeLimit, playerTwo.mctsIterLimit, playerTwo.rootParallelised, playerTwo.explorationConstant, playerTwo.RAVEBias);
+    two.createPlayer(playerTwo.playerType, playerTwo.playerCode, playerTwo.AIType, boardSize, playerTwo.isParallelised, playerTwo.mmDepth, playerTwo.mmTimeLimit, playerTwo.mctsTimeLimit, playerTwo.mctsIterLimit, playerTwo.rootParallelised, playerTwo.explorationConstant, playerTwo.RAVEBias, playerTwo.bridgeWeight);
 
     Board *gameBoard = new Board(boardSize, 1);
 
