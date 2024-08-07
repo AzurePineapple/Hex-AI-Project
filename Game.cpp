@@ -843,12 +843,12 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
                 outputFile << playerOne << std::endl;
                 outputFile << "Player 2 settings:" << std::endl;
                 outputFile << playerTwo << std::endl;
-                outputFile << "Played first, Swapped, Winner" << std::endl;
+                outputFile << "Played first, Swapped, Winner, Player 1 avg Sims/move, Player 2 avg Sims/move," << std::endl;
             }
 
             // Write the winner row
             std::string swapPerformedString = swapPerformed ? "true" : "false";
-            outputFile << playedFirst << ", " << swapPerformedString << ", " << winner << std::endl;
+            outputFile << playedFirst << ", " << swapPerformedString << ", " << winner << "," << players.first->getSimulationsAvg() << "," << players.second->getSimulationsAvg() << std::endl;
 
             outputFile.close();
 

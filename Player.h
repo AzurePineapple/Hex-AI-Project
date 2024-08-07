@@ -1,5 +1,6 @@
 #include "Minimax.cpp"
 #include "MCTS.cpp"
+#include <numeric>
 
 class Player
 {
@@ -20,6 +21,7 @@ private:
     bool rootParallelised;
     double explorationConstant;
     double RAVEBias;
+    std::vector<int> noSimulationsPerTurn;
 
 public:
     Player();
@@ -36,6 +38,8 @@ public:
     void updateColourCode(int colourCode);
 
     bool getIsComputer();
+
+    double getSimulationsAvg();
 
     ~Player();
 };

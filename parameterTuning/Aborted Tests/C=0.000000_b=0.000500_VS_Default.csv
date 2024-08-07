@@ -1,0 +1,59 @@
+Player 1 settings:
+Experiment Name, C=0.000000_b=0.000500
+Player Type, computer
+Player Code, 1
+AI Type, mcts
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 10
+MCTS Time Limit, 10
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0
+RAVE Bias, 0.0005
+
+Player 2 settings:
+Experiment Name, Default
+Player Type, computer
+Player Code, 2
+AI Type, mcts
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 10
+MCTS Time Limit, 10
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.001
+
+Played first, Swapped, Winner
+1, true, 2
+2, false, 2
+1, false, 1
+2, false, 2
+1, false, 2
+2, true, 2
+1, true, 2
+2, false, 2
+1, true, 2
+2, false, 2
+1, false, 2
+2, true, 2
+1, false, 2
+2, true, 1
+1, false, 2
+2, false, 2
+1, false, 2
+2, false, 2
+1, true, 2
+2, true, 2
+1, false, 2
+2, true, 2
+1, false, 2
+2, false, 2
+1, true, 2
+2, false, 2
+1, false, 2
+2, true, 2
+1, true, 2
+2, false, 2

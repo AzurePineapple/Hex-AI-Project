@@ -155,7 +155,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
         {
             // Root Parallelisation method
 
-            // Create as many threads as possible
+            // Create as many threads as feasible
             const int num_threads = 8;
             assert(num_threads <= std::thread::hardware_concurrency());
             std::vector<std::thread> threads;
@@ -195,6 +195,7 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
             // Get child with the most visits
             int maxValue = 0;
             std::pair<int, int> maxKey;
+            int totalSimulations = 0;
             for (const auto &entry : childValues)
             {
                 if (entry.second > maxValue)
@@ -202,7 +203,11 @@ void Player::playMoveAI(std::vector<std::pair<int, int>> availableTiles, int boa
                     maxValue = entry.second;
                     maxKey = entry.first;
                 }
+                totalSimulations += entry.second;
             }
+
+            // Record the number of simulations performed
+            noSimulationsPerTurn.push_back(totalSimulations);
 
             // std::cout << "(Root) Best child had " << maxValue << " visits" << std::endl;
 
@@ -268,6 +273,19 @@ void Player::updateColourCode(int colourCode)
 bool Player::getIsComputer()
 {
     return isComputer;
+}
+
+double Player::getSimulationsAvg()
+{
+    if (noSimulationsPerTurn.empty())
+    {
+        return 0;
+    }
+
+    int sum = std::accumulate(noSimulationsPerTurn.begin(), noSimulationsPerTurn.end(), 0);
+    double avg = static_cast<double>(sum) / noSimulationsPerTurn.size();
+
+    return avg;
 }
 
 Player::~Player()

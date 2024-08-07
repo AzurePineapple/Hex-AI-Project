@@ -12,8 +12,8 @@ struct playerSettings
     std::string AIType = "mcts";
     bool isParallelised = true;
     int mmDepth = 3;
-    double mmTimeLimit = 10.0;
-    double mctsTimeLimit = 10.0;
+    double mmTimeLimit = 5.0;
+    double mctsTimeLimit = 5.0;
     int mctsIterLimit = 10000;
     bool rootParallelised = true;
     double explorationConstant = 0.3; // Default from https://cgi.cse.unsw.edu.au/~abdallahs/Papers/2010/Monte-Carlo%20Hex.pdf section 3

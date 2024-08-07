@@ -37,36 +37,57 @@ void ParameterTuning()
     int numMatches = 30;
     // Bool to alternate which player goes first
 
-    std::vector<double> explorationConstants = {0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
-    std::vector<double> raveBiases = {0.0005, 0.00025, 0.000125};
+    std::vector<double> explorationConstants = {0.0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7};
 
     for (double C : explorationConstants)
     {
-        for (double b : raveBiases)
+        playerSettings playerOne;
+        playerOne.experimentName = "C=" + std::to_string(C);
+        playerOne.explorationConstant = C;
+
+        // Default control player, using default values. Default value details are in playerSettings.h
+        playerSettings playerTwo;
+        playerTwo.playerCode = 2;
+
+        bool swapFirstPlayer = false;
+        for (int i = 0; i < numMatches; i++)
         {
-            playerSettings playerOne;
-            playerOne.experimentName = "C=" + std::to_string(C) + "_b=" + std::to_string(b);
-            playerOne.explorationConstant = C;
-            playerOne.RAVEBias = b;
+            Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+            delete testGame;
+            swapFirstPlayer = swapFirstPlayer ? false : true;
 
-
-            // Default control player, using default values. Default value details are in playerSettings.h
-            playerSettings playerTwo;
-            playerTwo.playerCode = 2;
-
-            bool swapFirstPlayer = false;
-            for (int i = 0; i < numMatches; i++)
-            {
-                Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
-                delete testGame;
-                swapFirstPlayer = swapFirstPlayer ? false : true;
-
-                // Update the progress bar
-                printProgressBar(i + 1, numMatches);
-            }
-            std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+            // Update the progress bar
+            printProgressBar(i + 1, numMatches);
         }
+        std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
     }
+    std::cout << "Exploration constants finished" << std::endl;
+
+    std::vector<double> raveBiases = {0.0005, 0.00025, 0.000125};
+    for (double b : raveBiases)
+    {
+        playerSettings playerOne;
+        playerOne.experimentName = "b=" + std::to_string(b);
+        playerOne.RAVEBias = b;
+
+        // Default control player, using default values. Default value details are in playerSettings.h
+        playerSettings playerTwo;
+        playerTwo.playerCode = 2;
+
+        bool swapFirstPlayer = false;
+        for (int i = 0; i < numMatches; i++)
+        {
+            Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+            delete testGame;
+            swapFirstPlayer = swapFirstPlayer ? false : true;
+
+            // Update the progress bar
+            printProgressBar(i + 1, numMatches);
+        }
+        std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+    }
+
+    std::cout << "RaveBiases finished" << std::endl;
 }
 
 // Function to deslect all menu items in a given menu
