@@ -848,7 +848,7 @@ Game::Game(playerSettings playerOne, playerSettings playerTwo, int boardSize, SD
 
             // Write the winner row
             std::string swapPerformedString = swapPerformed ? "true" : "false";
-            outputFile << playedFirst << ", " << swapPerformedString << ", " << winner << "," << players.first->getSimulationsAvg() << "," << players.second->getSimulationsAvg() << std::endl;
+            outputFile << playedFirst << ", " << swapPerformedString << ", " << winner << ", " << players.first->getSimulationsAvg() << ", " << players.second->getSimulationsAvg() << std::endl;
 
             outputFile.close();
 

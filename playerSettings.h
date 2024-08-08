@@ -11,7 +11,7 @@ struct playerSettings
     int playerCode = 1;
     std::string AIType = "mcts";
     bool isParallelised = true;
-    int mmDepth = 3;
+    int mmDepth = 2;
     double mmTimeLimit = 5.0;
     double mctsTimeLimit = 5.0;
     int mctsIterLimit = 10000;
@@ -38,7 +38,8 @@ inline std::ostream &operator<<(std::ostream &os, const playerSettings &settings
        << "MCTS Iteration Limit, " << settings.mctsIterLimit << "\n"
        << "Root Parallelised, " << (settings.rootParallelised ? "true" : "false") << "\n"
        << "Exploration Constant, " << settings.explorationConstant << "\n"
-       << "RAVE Bias, " << settings.RAVEBias << "\n";
+       << "RAVE Bias, " << settings.RAVEBias << "\n"
+       << "Bridge Weight, " << settings.bridgeWeight << "\n";
     return os;
 }
 #endif

@@ -1,0 +1,59 @@
+Player 1 settings:
+Experiment Name, b=0.000500
+Player Type, computer
+Player Code, 1
+AI Type, mcts
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 5
+MCTS Time Limit, 5
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.0005
+
+Player 2 settings:
+Experiment Name, Default
+Player Type, computer
+Player Code, 2
+AI Type, mcts
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 5
+MCTS Time Limit, 5
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.001
+
+Played first, Swapped, Winner, Player 1 avg Sims/move, Player 2 avg Sims/move,
+1, false, 1,43265.2,42548.9
+2, false, 2,39145.8,40470.7
+1, false, 2,41686.6,41460.1
+2, false, 1,39251.6,39304.2
+1, false, 2,41325.4,41389.6
+2, true, 1,39548.2,37860.8
+1, false, 1,37826.9,36430.8
+2, false, 2,37517.4,38489.4
+1, true, 2,41076.2,41798.7
+2, true, 2,38510.6,37996.3
+1, true, 1,37026.5,38209.6
+2, true, 1,37891.7,36368.7
+1, true, 1,36860.5,37968.1
+2, false, 2,38043.1,39012.2
+1, true, 1,37993.9,39248.5
+2, true, 2,46802.3,47241.2
+1, false, 1,38992,37692.3
+2, true, 2,38067.5,36776.2
+1, true, 2,42415.2,43690.2
+2, true, 1,39414.8,36984.8
+1, false, 1,37432,36066.8
+2, false, 1,42608.7,42501.3
+1, false, 2,43309.7,43426.5
+2, false, 2,43389.2,44720.6
+1, true, 1,42729.8,43154
+2, true, 1,39175.7,38145.2
+1, false, 1,37502.3,36101
+2, false, 1,39455.4,39142.1
+1, false, 2,37771.7,36774.9
+2, true, 2,38834.4,37897.7

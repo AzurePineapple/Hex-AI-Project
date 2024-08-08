@@ -35,35 +35,35 @@ void ParameterTuning()
     const int boardSize = 9;
     // Set the number of test matches to do
     int numMatches = 30;
-    // Bool to alternate which player goes first
 
-    std::vector<double> explorationConstants = {0.0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7};
+    // std::vector<double> explorationConstants = {0.0, 0.1, 0.2, 0.4, 0.5, 0.6, 0.7};
 
-    for (double C : explorationConstants)
-    {
-        playerSettings playerOne;
-        playerOne.experimentName = "C=" + std::to_string(C);
-        playerOne.explorationConstant = C;
+    // for (double C : explorationConstants)
+    // {
+    //     playerSettings playerOne;
+    //     playerOne.experimentName = "C=" + std::to_string(C);
+    //     playerOne.explorationConstant = C;
 
-        // Default control player, using default values. Default value details are in playerSettings.h
-        playerSettings playerTwo;
-        playerTwo.playerCode = 2;
+    //     // Default control player, using default values. Default value details are in playerSettings.h
+    //     playerSettings playerTwo;
+    //     playerTwo.playerCode = 2;
 
-        bool swapFirstPlayer = false;
-        for (int i = 0; i < numMatches; i++)
-        {
-            Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
-            delete testGame;
-            swapFirstPlayer = swapFirstPlayer ? false : true;
+    //     // Bool to alternate which player goes first
+    //     bool swapFirstPlayer = false;
+    //     for (int i = 0; i < numMatches; i++)
+    //     {
+    //         Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+    //         delete testGame;
+    //         swapFirstPlayer = !swapFirstPlayer;
 
-            // Update the progress bar
-            printProgressBar(i + 1, numMatches);
-        }
-        std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
-    }
-    std::cout << "Exploration constants finished" << std::endl;
+    //         // Update the progress bar
+    //         printProgressBar(i + 1, numMatches);
+    //     }
+    //     std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+    // }
+    // std::cout << "Exploration constants finished" << std::endl;
 
-    std::vector<double> raveBiases = {0.0005, 0.00025, 0.000125};
+    std::vector<double> raveBiases = {0.000125}; //{0.0005, 0.00025, 0.000125};
     for (double b : raveBiases)
     {
         playerSettings playerOne;
@@ -74,12 +74,13 @@ void ParameterTuning()
         playerSettings playerTwo;
         playerTwo.playerCode = 2;
 
+        // Bool to alternate which player goes first
         bool swapFirstPlayer = false;
         for (int i = 0; i < numMatches; i++)
         {
             Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
             delete testGame;
-            swapFirstPlayer = swapFirstPlayer ? false : true;
+            swapFirstPlayer = !swapFirstPlayer;
 
             // Update the progress bar
             printProgressBar(i + 1, numMatches);
@@ -88,6 +89,43 @@ void ParameterTuning()
     }
 
     std::cout << "RaveBiases finished" << std::endl;
+
+    std::vector<double> bridgeWeights = {2.1,
+                                         2.2,
+                                         2.3,
+                                         2.4,
+                                         2.5,
+                                         2.6,
+                                         2.7,
+                                         2.8,
+                                         2.9};
+    for (auto BW : bridgeWeights)
+    {
+        playerSettings playerOne;
+        playerOne.AIType = "minimax";
+        playerOne.experimentName = "BW=" + std::to_string(BW);
+        playerOne.bridgeWeight = BW;
+
+        // Default control player, using default values. Default value details are in playerSettings.h
+        playerSettings playerTwo;
+        playerTwo.playerCode = 2;
+        playerTwo.AIType = "minimax";
+        playerTwo.experimentName = "DefaultMinimax";
+
+        // Bool to alternate which player goes first
+        bool swapFirstPlayer = false;
+        for (int i = 0; i < numMatches; i++)
+        {
+            Game *testGame = new Game(playerOne, playerTwo, boardSize, handler, swapFirstPlayer);
+            delete testGame;
+            swapFirstPlayer = !swapFirstPlayer;
+
+            // Update the progress bar
+            printProgressBar(i + 1, numMatches);
+        }
+        std::cout << "Completed " << numMatches << " games. Find results in parameterTuning/" << playerOne.experimentName << "_VS_" << playerTwo.experimentName << ".csv" << std::endl;
+    }
+    std::cout << "Bridge Weights finished" << std::endl;
 }
 
 // Function to deslect all menu items in a given menu

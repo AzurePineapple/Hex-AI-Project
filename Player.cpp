@@ -28,7 +28,6 @@ void Player::createPlayer(std::string playerType, int colourCode, std::string AI
         if (AIModel == "minimax")
         {
             minimaxEngine = MiniMax();
-            // MiniMax *test = new MiniMax();
         }
         else if (AIModel == "mcts")
         {
