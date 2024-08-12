@@ -1,0 +1,61 @@
+Player 1 settings:
+Experiment Name, BW=2.100000_TimeLim=60
+Player Type, computer
+Player Code, 1
+AI Type, minimax
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 60
+MCTS Time Limit, 5
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.001
+Bridge Weight, 2.1
+
+Player 2 settings:
+Experiment Name, DefaultMinimax_TimeLim=60
+Player Type, computer
+Player Code, 2
+AI Type, minimax
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 10
+MCTS Time Limit, 5
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.001
+Bridge Weight, 0
+
+Played first, Swapped, Winner, Player 1 avg Sims/move, Player 2 avg Sims/move,
+1, false, 2, 0, 0
+2, true, 2, 0, 0
+1, true, 1, 0, 0
+2, false, 1, 0, 0
+1, false, 2, 0, 0
+2, false, 1, 0, 0
+1, true, 1, 0, 0
+2, false, 1, 0, 0
+1, true, 2, 0, 0
+2, false, 2, 0, 0
+1, true, 2, 0, 0
+2, false, 1, 0, 0
+1, true, 1, 0, 0
+2, false, 1, 0, 0
+1, false, 1, 0, 0
+2, false, 1, 0, 0
+1, true, 1, 0, 0
+2, false, 2, 0, 0
+1, true, 2, 0, 0
+2, false, 1, 0, 0
+1, false, 2, 0, 0
+2, false, 1, 0, 0
+1, false, 2, 0, 0
+2, false, 1, 0, 0
+1, false, 2, 0, 0
+2, true, 1, 0, 0
+1, true, 2, 0, 0
+2, true, 1, 0, 0
+1, false, 1, 0, 0
+2, false, 2, 0, 0

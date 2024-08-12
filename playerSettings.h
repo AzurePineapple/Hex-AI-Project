@@ -11,8 +11,8 @@ struct playerSettings
     int playerCode = 1;
     std::string AIType = "mcts";
     bool isParallelised = true;
-    int mmDepth = 2;
-    double mmTimeLimit = 5.0;
+    int mmDepth = 3;
+    double mmTimeLimit = 10.0;
     double mctsTimeLimit = 5.0;
     int mctsIterLimit = 10000;
     bool rootParallelised = true;
