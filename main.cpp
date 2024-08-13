@@ -185,7 +185,7 @@ void ParameterTuning()
 
     playerSettings playerTwo;
     playerTwo.playerCode = 2;
-    playerTwo.experimentName = "BestMinimax";
+    playerTwo.experimentName = "BestMinimaxRound2";
     playerTwo.AIType = "minimax";
     playerTwo.bridgeWeight = bestBridgeWeight;
     playerTwo.mmTimeLimit = 10.0;

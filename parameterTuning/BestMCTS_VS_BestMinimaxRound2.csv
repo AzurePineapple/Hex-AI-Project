@@ -1,0 +1,131 @@
+Player 1 settings:
+Experiment Name, BestMCTS
+Player Type, computer
+Player Code, 1
+AI Type, mcts
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 10
+MCTS Time Limit, 10
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.1
+RAVE Bias, 0.005
+Bridge Weight, 0
+
+Player 2 settings:
+Experiment Name, BestMinimaxRound2
+Player Type, computer
+Player Code, 2
+AI Type, minimax
+Is Parallelised, true
+Minimax Depth, 3
+Minimax Time Limit, 10
+MCTS Time Limit, 5
+MCTS Iteration Limit, 10000
+Root Parallelised, true
+Exploration Constant, 0.3
+RAVE Bias, 0.001
+Bridge Weight, 2.3
+
+Played first, Swapped, Winner, Player 1 avg Sims/move, Player 2 avg Sims/move,
+1, false, 1, 80000, 0
+2, false, 1, 80000, 0
+1, true, 1, 74010.5, 0
+2, true, 1, 65421.5, 0
+1, false, 1, 62901.1, 0
+2, true, 1, 53656.8, 0
+1, true, 2, 53592.7, 0
+2, false, 1, 49886.2, 0
+1, false, 1, 53774.4, 0
+2, true, 1, 57062.8, 0
+1, true, 1, 50122.8, 0
+2, true, 1, 54512.9, 0
+1, true, 1, 53883.2, 0
+2, true, 1, 52427.7, 0
+1, true, 1, 51782.9, 0
+2, true, 1, 55695.5, 0
+1, false, 2, 48691.5, 0
+2, true, 2, 49138.2, 0
+1, false, 2, 48674.1, 0
+2, true, 1, 51878.2, 0
+1, false, 1, 49454.9, 0
+2, false, 1, 50492.4, 0
+1, false, 1, 59041, 0
+2, true, 1, 55464.1, 0
+1, false, 1, 50293.4, 0
+2, true, 1, 56716.9, 0
+1, true, 2, 47217.4, 0
+2, false, 1, 53379.1, 0
+1, true, 1, 51902.7, 0
+2, true, 1, 53671, 0
+1, true, 1, 49657.9, 0
+2, true, 1, 61373.6, 0
+1, false, 1, 50877.7, 0
+2, true, 2, 50077.8, 0
+1, false, 1, 50486, 0
+2, false, 2, 48366.1, 0
+1, false, 1, 49085.8, 0
+2, true, 1, 50003.4, 0
+1, true, 1, 49271.8, 0
+2, false, 1, 52214.9, 0
+1, false, 1, 57638.3, 0
+2, true, 2, 48445.2, 0
+1, false, 1, 52680.8, 0
+2, true, 1, 54154.8, 0
+1, true, 1, 46866.3, 0
+2, true, 1, 49629.5, 0
+1, false, 2, 45546.6, 0
+2, true, 1, 50824, 0
+1, false, 1, 52985.3, 0
+2, true, 1, 48340.5, 0
+1, false, 1, 54652.2, 0
+2, false, 1, 48992.9, 0
+1, true, 1, 45428.9, 0
+2, true, 1, 64227.8, 0
+1, true, 1, 70657.2, 0
+2, false, 1, 60887.1, 0
+1, true, 1, 60945.9, 0
+2, false, 1, 68156.5, 0
+1, true, 2, 53121.6, 0
+2, true, 2, 55095.8, 0
+1, false, 1, 59498.8, 0
+2, true, 1, 53003, 0
+1, false, 2, 49846.2, 0
+2, false, 1, 57550.1, 0
+1, false, 1, 52409.7, 0
+2, true, 1, 49988.5, 0
+1, true, 2, 49582.4, 0
+2, true, 1, 53607.6, 0
+1, true, 1, 59303.4, 0
+2, true, 1, 60285.2, 0
+1, true, 1, 54379.8, 0
+2, false, 1, 57400.6, 0
+1, false, 2, 53485.8, 0
+2, true, 1, 57309.3, 0
+1, true, 2, 49709, 0
+2, false, 1, 52013.1, 0
+1, false, 1, 56161.7, 0
+2, true, 1, 54475.5, 0
+1, true, 1, 51665.1, 0
+2, true, 1, 59941.8, 0
+1, true, 1, 53199.5, 0
+2, false, 1, 54586.2, 0
+1, true, 2, 48910.3, 0
+2, false, 1, 52099.3, 0
+1, false, 1, 51393.5, 0
+2, false, 1, 55918.4, 0
+1, true, 1, 50429.5, 0
+2, true, 2, 49657.4, 0
+1, false, 1, 52495.3, 0
+2, false, 1, 52164.8, 0
+1, true, 2, 48310.5, 0
+2, true, 2, 49837.5, 0
+1, false, 1, 56256.2, 0
+2, true, 1, 53448.2, 0
+1, false, 1, 50469.2, 0
+2, true, 1, 63307.9, 0
+1, true, 1, 54636.2, 0
+2, true, 1, 50581.7, 0
+1, false, 2, 49469.1, 0
+2, true, 2, 49285.2, 0
