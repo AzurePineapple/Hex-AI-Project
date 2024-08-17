@@ -481,7 +481,7 @@ void ProcessMenuSelection(HWND hwnd, WPARAM wParam, SDL_Handler *handler, MenuSt
 int main(int argv, char **args)
 {
 
-    bool TestingMode = true;
+    bool TestingMode = false;
 
     if (TestingMode)
     {
@@ -526,6 +526,7 @@ int main(int argv, char **args)
                 {
                     PostQuitMessage(0);
                     running = false;
+                    break;
                 }
 
                 if (event.type == SDL_SYSWMEVENT)

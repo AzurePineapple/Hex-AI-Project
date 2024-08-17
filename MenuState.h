@@ -49,7 +49,7 @@ struct MenuState
 {
     int selectedBoardSize = BOARD_SIZE_7x7;           // Default to 7x7
     int selectedPlayerOneOption = PLAYER_ONE_HUMAN;   // Default to Human
-    int selectedPlayerTwoOption = PLAYER_TWO_MINIMAX; // Default to Minimax
+    int selectedPlayerTwoOption = PLAYER_TWO_MCTS;    // Default to Minimax
     int selectedMinimaxDepth = MINIMAX_DEPTH_2;       // Default to depth 2
     int selectedMinimaxTimeLimit = MM_TIME_10_SEC;    // Default to 10 seconds
     int selectedMCTSTimeLimit = MCTS_TIME_10_SEC;     // Default to 10 seconds
@@ -57,6 +57,7 @@ struct MenuState
     int selectedBoardColour = BLACK_WHITE;            // Default to black vs. white
     int selectedParallelStyle = ROOT;                 // Default to root
 };
+
 
 // Toggles menu items to grey and back when not in use
 void setMenuState(HWND hwnd, HMENU hMenu, UINT itemPos, bool enabled)
